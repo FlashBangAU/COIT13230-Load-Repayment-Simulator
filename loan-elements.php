@@ -17,6 +17,41 @@
 
     if ($validLogin || $validSession) {
         echo '<h1>List of Loans</h1>';
+
+        require("db-connection.php");
+
+        // Validate and get DB_set from GET parameter
+        if (isset($_GET['DB_set']) && is_numeric($_GET['DB_set'])) {
+            $DbID = (int)$_GET['DB_set'];
+        } else {
+            echo "Invalid loan ID.";
+            $db->close();
+            exit;
+        }
+
+        $search = $_SESSION['id-user'];
+        $query = "SELECT * FROM starting_loan_values WHERE ID_user = ? AND DB_set = ?";
+
+        $stmt = $db->prepare($query);
+        if (!empty($search)) {
+            $stmt->bind_param("ii", $search, $DbID);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+
+        while ($row = $result->fetch_assoc()) {
+            $id = $row['DB_set'];
+            $startDate = $row['start_date'];
+            $startInterest = $row['start_interest'];
+            $startPrinciple = $row['start_principle'];
+            $durationYears = $row['duration_years'];
+            $paymentInterval = $row['payment_interval'];
+
+            echo "<b>Loan Start Date:</b> $startDate    <b>Beginning Interest:</b> $startInterest    <b>Principle:</b> $$startPrinciple <b>Duration:</b> $durationYears years <b>Interest Added Every:</b> $paymentInterval <br>";
+        }
+
+
         require("db-connection.php");
 
         // Validate and get DB_set from GET parameter
