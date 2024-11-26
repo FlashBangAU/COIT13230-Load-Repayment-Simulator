@@ -24,7 +24,7 @@
 
         $stmt = $db->prepare($query);
         if (!empty($search)) {
-            $stmt->bind_param("s", $search);
+            $stmt->bind_param("i", $search);
         }
         $stmt->execute();
         $result = $stmt->get_result();
