@@ -41,8 +41,9 @@
 
         $numResults = $result->num_rows;
 
+        echo "<br>";
+        createButtonColumn1("DB_set", $DbID, "Add Interest", "add-interest.php");
         echo <<<END
-        <br>
         <table>
         <thead>
             <tr>
@@ -56,14 +57,15 @@
 END;
         while ($row = $result->fetch_assoc()) {
             $id = $row['DB_set'];
+            $interestID = $row['interest_ID'];
             $interestDate = $row['date_interest'];
             $interestAmount = $row['new_val_interest'];
 
             echo "<tr>";
             echo "<td valign=\"top\">$interestDate</td>";
             echo "<td valign=\"top\">$interestAmount</td>";
-            createButtonColumn("DB_set", $id, "Edit", "edit-interest.php");
-            createButtonColumn("DB_set", $id, "Delete", "delete-interest.php");
+            createButtonColumn2("DB_set", $DbID, "interest_ID", $interestID, "Edit", "edit-interest.php");
+            createButtonColumn2("DB_set", $DbID, "interest_ID", $interestID, "Delete", "delete-interest.php");
             echo "</tr>";
         }
 
@@ -100,8 +102,9 @@ END;
 
         $numResults = $result->num_rows;
 
+        echo "<br>";
+        createButtonColumn1("DB_set", $DbID, "Add Payment", "add-payment.php");
         echo <<<END
-        <br>
         <table>
         <thead>
             <tr>
@@ -115,14 +118,15 @@ END;
 END;
         while ($row = $result->fetch_assoc()) {
             $id = $row['DB_set'];
+            $paymentID = $row['payment_ID'];
             $paymentDate = $row['date_additional_payment'];
             $paymentAmount = $row['amount_additional_payments'];
 
             echo "<tr>";
             echo "<td valign=\"top\">$paymentDate</td>";
             echo "<td valign=\"top\">$paymentAmount</td>";
-            createButtonColumn("DB_set", $id, "Edit", "edit-payment.php");
-            createButtonColumn("DB_set", $id, "Delete", "delete-payment.php");
+            createButtonColumn2("DB_set", $DbID, "payment_ID", $paymentID, "Edit", "edit-payment.php");
+            createButtonColumn2("DB_set", $DbID, "payment_ID", $paymentID, "Delete", "delete-payment.php");
             echo "</tr>";
         }
 
@@ -142,10 +146,19 @@ END;
         require('login.php');
     }
 
-    function createButtonColumn($hiddenName, $hiddenValue, $buttonText, $actionPage) {
+    function createButtonColumn1($hiddenName, $hiddenValue, $buttonText, $actionPage) {
         echo "<td>";
         echo "<form action=\"$actionPage\" method=\"GET\">";
         echo "<input type=\"hidden\" name=\"$hiddenName\" value=\"$hiddenValue\">";
+        echo "<button type=\"submit\">$buttonText</button>";
+        echo "</form>";            
+        echo "</td>";
+    }
+    function createButtonColumn2($hiddenName1, $hiddenValue1, $hiddenName2, $hiddenValue2, $buttonText, $actionPage) {
+        echo "<td>";
+        echo "<form action=\"$actionPage\" method=\"GET\">";
+        echo "<input type=\"hidden\" name=\"$hiddenName1\" value=\"$hiddenValue1\">";
+        echo "<input type=\"hidden\" name=\"$hiddenName2\" value=\"$hiddenValue2\">";
         echo "<button type=\"submit\">$buttonText</button>";
         echo "</form>";            
         echo "</td>";
