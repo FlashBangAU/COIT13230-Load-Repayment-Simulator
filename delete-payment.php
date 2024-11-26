@@ -85,7 +85,6 @@
 
             // Display loan details for confirmation before deletion
             echo <<<END
-            Delete Payment:<br><br>
             <form action="" method="POST">
                 <table>
                     <tr>
@@ -94,7 +93,7 @@
                     </tr>
                     <tr>
                         <td>Payment Amount:</td>
-                        <td>$amount</td>
+                        <td>$$amount</td>
                     </tr>
                 </table>
                 <br>

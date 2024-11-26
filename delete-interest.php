@@ -93,7 +93,7 @@
                     </tr>
                     <tr>
                         <td>New Interest Amount:</td>
-                        <td>$interest</td>
+                        <td>$interest%</td>
                     </tr>
                 </table>
                 <br>

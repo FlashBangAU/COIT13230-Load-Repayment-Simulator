@@ -48,7 +48,7 @@
             $durationYears = $row['duration_years'];
             $paymentInterval = $row['payment_interval'];
 
-            echo "<b>Loan Start Date:</b> $startDate    <b>Beginning Interest:</b> $startInterest    <b>Principle:</b> $$startPrinciple <b>Duration:</b> $durationYears years <b>Interest Added Every:</b> $paymentInterval <br>";
+            echo "<b>Loan Start Date:</b> $startDate    <b>Beginning Interest:</b> $startInterest%    <b>Principle:</b> $$startPrinciple <b>Duration:</b> $durationYears years <b>Interest Added Every:</b> $paymentInterval <br>";
         }
 
 
@@ -98,7 +98,7 @@ END;
 
             echo "<tr>";
             echo "<td valign=\"top\">$interestDate</td>";
-            echo "<td valign=\"top\">$interestAmount</td>";
+            echo "<td valign=\"top\">$interestAmount%</td>";
             createButtonColumn2("DB_set", $DbID, "interest_ID", $interestID, "Edit", "edit-interest.php");
             createButtonColumn2("DB_set", $DbID, "interest_ID", $interestID, "Delete", "delete-interest.php");
             echo "</tr>";
@@ -159,7 +159,7 @@ END;
 
             echo "<tr>";
             echo "<td valign=\"top\">$paymentDate</td>";
-            echo "<td valign=\"top\">$paymentAmount</td>";
+            echo "<td valign=\"top\">$$paymentAmount</td>";
             createButtonColumn2("DB_set", $DbID, "payment_ID", $paymentID, "Edit", "edit-payment.php");
             createButtonColumn2("DB_set", $DbID, "payment_ID", $paymentID, "Delete", "delete-payment.php");
             echo "</tr>";
