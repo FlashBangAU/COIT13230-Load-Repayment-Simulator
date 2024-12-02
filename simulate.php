@@ -41,14 +41,12 @@
         $stmt->close();
 
         while ($row = $result->fetch_assoc()) {
-            $id = $row['DB_set'];
             $startDate = $row['start_date'];
             $startInterest = $row['start_interest'];
             $startPrinciple = $row['start_principle'];
             $durationYears = $row['duration_years'];
             $paymentInterval = $row['payment_interval'];
 
-            createButtonColumn1("DB_set", $DbID, "Simulate", "simulate.php");
             echo "<b>Loan Start Date:</b> $startDate    <b>Beginning Interest:</b> $startInterest%    <b>Principle:</b> $$startPrinciple <b>Duration:</b> $durationYears years <b>Interest Added Every:</b> $paymentInterval <br>";
         }
 
@@ -68,39 +66,29 @@
         $numResults = $result->num_rows;
 
         echo "<br>";
-        createButtonColumn1("DB_set", $DbID, "Add Interest", "add-interest.php");
-        echo <<<END
-        <table>
-        <thead>
-            <tr>
-                <th>Interest Change Date</th>
-                <th>Interest Change Amount</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-END;
+
+        $interest = '';
+        $i = 0;
         while ($row = $result->fetch_assoc()) {
-            $id = $row['DB_set'];
-            $interestID = $row['interest_ID'];
             $interestDate = $row['date_interest'];
             $interestAmount = $row['new_val_interest'];
 
-            echo "<tr>";
-            echo "<td valign=\"top\">$interestDate</td>";
-            echo "<td valign=\"top\">$interestAmount%</td>";
-            createButtonColumn2("DB_set", $DbID, "interest_ID", $interestID, "Edit", "edit-interest.php");
-            createButtonColumn2("DB_set", $DbID, "interest_ID", $interestID, "Delete", "delete-interest.php");
-            echo "</tr>";
+            if($i !=0 ){
+                $interest .= ',';
+            }
+
+
+            $day = date('d', strtotime($interestDate));
+            $month = date('m', strtotime($interestDate));
+            $year = date('Y', strtotime($interestDate));
+
+            $interest .= '[' . $year . ',' . $month . ',' . $day . ',' . $interestAmount . ']';
+
+            $i++;
         }
 
         $result->free();
         $db->close();
-
-        echo '</tbody>';
-        echo '</table>';
-
 
 
         require("db-connection.php");
@@ -118,39 +106,28 @@ END;
         $numResults = $result->num_rows;
 
         echo "<br>";
-        createButtonColumn1("DB_set", $DbID, "Add Payment", "add-payment.php");
-        echo <<<END
-        <table>
-        <thead>
-            <tr>
-                <th>Additional Payment Date</th>
-                <th>Payment Amount</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-END;
+
+        $payment = '';
+        $i = 0;
         while ($row = $result->fetch_assoc()) {
-            $id = $row['DB_set'];
-            $paymentID = $row['payment_ID'];
             $paymentDate = $row['date_additional_payment'];
             $paymentAmount = $row['amount_additional_payments'];
 
-            echo "<tr>";
-            echo "<td valign=\"top\">$paymentDate</td>";
-            echo "<td valign=\"top\">$$paymentAmount</td>";
-            createButtonColumn2("DB_set", $DbID, "payment_ID", $paymentID, "Edit", "edit-payment.php");
-            createButtonColumn2("DB_set", $DbID, "payment_ID", $paymentID, "Delete", "delete-payment.php");
-            echo "</tr>";
+            if($i !=0 ){
+                $payment .= ',';
+            }
+
+            $day = date('d', strtotime($paymentDate));
+            $month = date('m', strtotime($paymentDate));
+            $year = date('Y', strtotime($paymentDate));
+
+            $payment .= '[' . $year . ',' . $month . ',' . $day . ',' . $paymentAmount . ']';
+
+            $i++;
         }
 
         $result->free();
         $db->close();
-
-        echo '</tbody>';
-        echo '</table>';
-
 
 
         require('footer-logged-in.php');
@@ -179,5 +156,20 @@ END;
         echo "</td>";
     }
     ?>
+
+    <script type="text/javascript">
+        var startDate = <?php echo "'$startDate'"; ?>.split(/[-]/);
+        var startInterest = <?php echo $startInterest; ?>;
+        var startPrinciple = <?php echo $startPrinciple; ?>;
+        var startDuration = <?php echo $durationYears; ?>;
+        var startInterval = <?php echo "'$paymentInterval'"; ?>;
+
+        var interest = [<?php echo $interest; ?>];
+        var payment = [<?php echo $payment; ?>];
+
+        console.log(startDate);
+        console.log(interest);
+        console.log(payment);
+    </script>
 </body>
 </html>
