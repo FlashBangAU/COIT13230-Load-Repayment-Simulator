@@ -155,6 +155,7 @@
             END;
 
             $db->close();
+            require('footer-logged-in.php');
         } else {
             if (isset($_SESSION['valid-user'])) {
                 echo "Could not log you in.<br>";

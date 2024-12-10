@@ -107,24 +107,20 @@
 
         echo "<br>";
 
-        $payment = '';
-        $i = 0;
+        $paymentArray = [];
         while ($row = $result->fetch_assoc()) {
             $paymentDate = $row['date_additional_payment'];
             $paymentAmount = $row['amount_additional_payments'];
-
-            if($i !=0 ){
-                $payment .= ',';
-            }
 
             $day = date('d', strtotime($paymentDate));
             $month = date('m', strtotime($paymentDate));
             $year = date('Y', strtotime($paymentDate));
 
-            $payment .= '[' . $year . ',' . $month . ',' . $day . ',' . $paymentAmount . ']';
-
-            $i++;
+            $paymentArray[] = [(int)$year, (int)$month, (int)$day, (float)$paymentAmount];
         }
+
+        $payment = json_encode($paymentArray);
+
 
         $result->free();
         $db->close();
@@ -158,18 +154,164 @@
     ?>
 
     <script type="text/javascript">
-        var startDate = <?php echo "'$startDate'"; ?>.split(/[-]/);
+        var date = <?php echo "'$startDate'"; ?>.split(/[-]/);
         var startInterest = <?php echo $startInterest; ?>;
+        startInterest = startInterest / 100;
         var startPrinciple = <?php echo $startPrinciple; ?>;
         var startDuration = <?php echo $durationYears; ?>;
-        var startInterval = <?php echo "'$paymentInterval'"; ?>;
+        var startIntervalStr = <?php echo "'$paymentInterval'"; ?>;
 
-        var interest = [<?php echo $interest; ?>];
-        var payment = [<?php echo $payment; ?>];
+        var interest = JSON.parse('[<?php echo $interest; ?>]');
+        var payment = <?php echo $payment; ?>;
 
-        console.log(startDate);
-        console.log(interest);
-        console.log(payment);
+        //test if variables are active
+        console.log("startDate: " + date);
+        console.log("startInterest: " + startInterest);
+        console.log("startPrinciple: " + startPrinciple);
+        console.log("startDuration: " + startDuration);
+        console.log("startIntervalStr: " + startIntervalStr);
+
+        console.log("interest: " + interest);
+        console.log("payment: " + payment);
+
+//set current date
+        var currYear = date[0];
+        var currMonth = date[1];
+        var currDay = date[2];
+
+        var currInterestPaymentsAnnual;
+
+        var daysLeftInMonth = daysInMonth(currMonth, currYear) - currDay + 1;
+
+//set how often repayments will be made and interest is charged
+        var amountOfPayments;
+        var interval = 0;
+        switch(startIntervalStr) {
+            case "Weekly":
+                interval = 7;
+                currInterestPaymentsAnnual = startInterest/52;
+                amountOfPayments = startDuration * 52;
+                break;
+            case "Fortnightly":
+                interval = 14;
+                currInterestPaymentsAnnual = startInterest/26;
+                amountOfPayments = startDuration * 26;
+                break;
+            case "Monthly":
+                interval = daysLeftInMonth;
+                currInterestPaymentsAnnual = startInterest/12;
+                amountOfPayments = startDuration * 12;
+                break;
+        }
+
+        var currPrinciple = startPrinciple;
+
+//set daily interest rate (banks divide by 365 even on leap years)
+        var currInterest = startInterest / 365; 
+
+        var PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
+        console.log("PMT: " + PMT);
+        console.log('');
+
+        var totalInterestCharged = 0;
+
+
+        var stuckInLoop = false;
+        var interestForInterval = 0;
+//loop to calculate loan
+        while(currPrinciple > 0 && stuckInLoop == false)
+        {
+//change interest if possible
+
+//make repayment if possible
+
+
+
+//calculate daily interest for interval interest
+            interestForInterval = interestForInterval + (currPrinciple * currInterest);
+
+//add repayment at interval and set new interval
+            //reset amount left in interval
+            if (interval == 0){
+                amountOfPayments--;
+                interval = setInterval(startIntervalStr, currMonth, currYear);
+
+                totalInterestCharged = totalInterestCharged + (PMT - (PMT - interestForInterval));
+                
+                currPrinciple = currPrinciple - (PMT - interestForInterval);
+                console.log("interestForInterval: " + interestForInterval);
+                interestForInterval = 0;
+                console.log("Pinciple: " + currPrinciple);
+            }
+
+//add day to loan and update month or year
+            daysLeftInMonth--;
+            interval--;
+
+            if (amountOfPayments == -1)//prevents loop from getting stuck infinitly.
+                stuckInLoop = true;
+        }
+
+        if (!stuckInLoop)
+            console.log("Loan finished normally and paid of principle");
+        console.log("amountOfPayments Remaining: " + amountOfPayments);
+
+
+
+        function daysInMonth(month, year){
+            switch(month){
+                case '1': // January
+                    return 31;
+                case '2': // February
+                    if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) //leap year logic
+                        return 29;
+                    return 28;
+                case '3': // March
+                    return 31;
+                case '4': // April
+                    return 30;
+                case '5': // May
+                    return 31;
+                case '6': // June
+                    return 30;
+                case '7': // July
+                    return 31;
+                case '8': // August
+                    return 31;
+                case '9': // September
+                    return 30;
+                case '10': // October
+                    return 31;
+                case '11': // November
+                    return 30;
+                case '12': // December
+                    return 31;
+                default:
+                    console.error("Invalid month: " + month);
+                    return 0; // Ensure no undefined value is returned
+            }
+        }
+
+
+        //principle, rate, period
+        function getPMT(p, r, n) {
+            return p * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+        }
+
+        function setInterval (startIntervalStr, currMonth, currYear){
+            switch(startIntervalStr) {
+            case "Weekly":
+                return 7;
+                break;
+            case "Fortnightly":
+                return 14;
+                break;
+            case "Monthly":
+                return daysInMonth(currMonth, currYear);
+                break;
+        }
+        }
+
     </script>
 </body>
 </html>
