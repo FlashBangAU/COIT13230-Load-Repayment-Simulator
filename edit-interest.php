@@ -75,11 +75,11 @@
                         echo "No changes made. Please modify the fields before submitting.";
                     } else {
                         // Proceed to edit loan if changes were made
-                        $query = "UPDATE interest_repayments SET date_interest = ?, new_val_interest = ? WHERE DB_set = ? AND interest_ID = ?";
+                        $query = "UPDATE interest_repayments SET date_interest = ?, new_val_interest = ? WHERE ID_user = ? AND DB_set = ? AND interest_ID = ?";
                         $stmt = $db->prepare($query);
 
                         if ($stmt) {
-                            $stmt->bind_param("sdii", $newDate, $newInterest, $DbID, $interestID);
+                            $stmt->bind_param("sdiii", $newDate, $newInterest, $search, $DbID, $interestID);
                             $stmt->execute();
                             $affectedRows = $stmt->affected_rows;
                             $stmt->close();
