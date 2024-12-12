@@ -125,6 +125,46 @@
         $result->free();
         $db->close();
 
+        echo <<<END
+            <h3>Loan Simulation Results</h3>
+             <table>
+                    <tr>
+                        <td>Start Date:</td>
+                        <td>$startDate</td>
+                        <td>        </td>
+                        <td>Finish Date:</td>
+                        <td><div id="currDate"></div></td>
+                    </tr>
+                    <tr>
+                        <td>Start Principle:</td>
+                        <td>$$startPrinciple</td>
+                        <td>        </td>
+                        <td>Total Paid:</td>
+                        <td><div id="totalPaid"></div></td>
+                    </tr>
+                    <tr>
+                        <td>Start Interest:</td>
+                        <td>$startInterest%</td>
+                        <td>        </td>
+                        <td>Interest Paid:</td>
+                        <td><div id="interestPaid"></div></td>
+                    </tr>
+                    <tr>
+                        <td>Duration:</td>
+                        <td>$durationYears years</td>
+                        <td>        </td>
+                        <td>Time till finish:</td>
+                        <td><div id="timeTaken"></div></td>
+                    </tr>
+                    <tr>
+                        <td>Payment Interval:</td>
+                        <td>$paymentInterval</td>
+                        <td>        </td>
+                    </td>
+                    </tr>
+                </table>
+        END;
+
 
         require('footer-logged-in.php');
     } else {
@@ -166,7 +206,7 @@
 
         //test if variables are active
         console.log("startDate: " + date);
-        console.log("startInterest: " + startInterest);
+        console.log("startInterest: " + startInterest * 100 + "%");
         console.log("startPrinciple: " + startPrinciple);
         console.log("startDuration: " + startDuration);
         console.log("startIntervalStr: " + startIntervalStr);
@@ -176,7 +216,7 @@
 
 //set current date
         var currYear = date[0];
-        var currMonth = date[1];
+        var currMonth = Number(date[1]);
         var currDay = date[2];
 
         var currInterestPaymentsAnnual;
@@ -203,6 +243,7 @@
                 amountOfPayments = startDuration * 12;
                 break;
         }
+        console.log("interval: " + interval);
 
         var currPrinciple = startPrinciple;
 
@@ -210,11 +251,15 @@
         var currInterest = startInterest / 365; 
 
         var PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
-        console.log("PMT: " + PMT);
+        console.log("PMT: $" + PMT);
         console.log('');
 
         var totalInterestCharged = 0;
 
+        //interest changed count
+        var icc = 0;
+        //payments made count
+        var pmc = 0;
 
         var stuckInLoop = false;
         var interestForInterval = 0;
@@ -222,9 +267,22 @@
         while(currPrinciple > 0 && stuckInLoop == false)
         {
 //change interest if possible
+            if(icc < interest.length){
+                if(interest[icc][0] == currYear && interest[icc][1] == currMonth && interest[icc][2] == currDay){
+                    currInterest = interest[icc][3] / 100 / 365;
+                    console.log("Changed interest to " + interest[icc][3] +  "%.");
+                    icc++;
+                }
+            }
 
 //make repayment if possible
-
+            if(pmc < payment.length){
+                if(payment[pmc][0] == currYear && payment[pmc][1] == currMonth && payment[pmc][2] == currDay){
+                    currPrinciple -= payment[pmc][3];
+                    console.log("Additional repayment made: $" + payment[pmc][3]);
+                    pmc++; 
+                }
+            }
 
 
 //calculate daily interest for interval interest
@@ -239,57 +297,89 @@
                 totalInterestCharged = totalInterestCharged + (PMT - (PMT - interestForInterval));
                 
                 currPrinciple = currPrinciple - (PMT - interestForInterval);
-                console.log("interestForInterval: " + interestForInterval);
+                //console.log("interestForInterval: " + interestForInterval);
                 interestForInterval = 0;
-                console.log("Pinciple: " + currPrinciple);
+                //console.log("Pinciple: " + currPrinciple);
             }
+
+            interval--;
 
 //add day to loan and update month or year
             daysLeftInMonth--;
-            interval--;
+            currDay++;
+            if(daysLeftInMonth == 0){
+                currMonth = setNextMonth(currMonth);
+                //console.log(currMonth + " " + currYear);
+                currDay = 1;
+                daysLeftInMonth = daysInMonth(currMonth, currYear);
+            }
+
 
             if (amountOfPayments == -1)//prevents loop from getting stuck infinitly.
                 stuckInLoop = true;
         }
 
+        console.log("");
         if (!stuckInLoop)
             console.log("Loan finished normally and paid of principle");
         console.log("amountOfPayments Remaining: " + amountOfPayments);
+        console.log("total amount spent on repayments: " + (totalInterestCharged + startPrinciple));
+        console.log("totalInterestCharged: " + totalInterestCharged);
 
 
+
+        function newAnnualInterest(startIntervalStr, newInterest){
+            switch(startIntervalStr) {
+                case "Weekly":
+                    return newInterest/52;
+                case "Fortnightly":
+                    return newInterest/26;
+                case "Monthly":
+                    return newInterest/12;
+            }
+        }
 
         function daysInMonth(month, year){
             switch(month){
-                case '1': // January
+                case 1: // January
                     return 31;
-                case '2': // February
+                case 2: // February
                     if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) //leap year logic
                         return 29;
                     return 28;
-                case '3': // March
+                case 3: // March
                     return 31;
-                case '4': // April
+                case 4: // April
                     return 30;
-                case '5': // May
+                case 5: // May
                     return 31;
-                case '6': // June
+                case 6: // June
                     return 30;
-                case '7': // July
+                case 7: // July
                     return 31;
-                case '8': // August
+                case 8: // August
                     return 31;
-                case '9': // September
+                case 9: // September
                     return 30;
-                case '10': // October
+                case 10: // October
                     return 31;
-                case '11': // November
+                case 11: // November
                     return 30;
-                case '12': // December
+                case 12: // December
                     return 31;
                 default:
                     console.error("Invalid month: " + month);
                     return 0; // Ensure no undefined value is returned
             }
+        }
+
+        function setNextMonth(month){
+            month++;
+            if(month == 13){
+                month = 1;
+                currYear++;
+            }
+            return month;
         }
 
 
@@ -300,17 +390,18 @@
 
         function setInterval (startIntervalStr, currMonth, currYear){
             switch(startIntervalStr) {
-            case "Weekly":
-                return 7;
-                break;
-            case "Fortnightly":
-                return 14;
-                break;
-            case "Monthly":
-                return daysInMonth(currMonth, currYear);
-                break;
+                case "Weekly":
+                    return 7;
+                case "Fortnightly":
+                    return 14;
+                case "Monthly":
+                    return daysInMonth(currMonth, currYear);
+            }
         }
-        }
+
+        document.getElementById("currDate").innerHTML = currYear+"-"+currMonth+"-"+currDay;
+        document.getElementById("totalPaid").innerHTML = "$"+(totalInterestCharged+startPrinciple).toFixed(2);
+        document.getElementById("interestPaid").innerHTML = "$"+totalInterestCharged.toFixed(2);
 
     </script>
 </body>
