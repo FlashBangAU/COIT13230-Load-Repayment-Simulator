@@ -258,8 +258,37 @@
 
         //interest changed count
         var icc = 0;
+        var interestReady = false;
+        //if interest change is before loan start date this needs to be checked before simulation begins
+        while(!interestReady && icc < interest.length){
+            if(interest[icc][0] < currYear){
+                icc++;
+            }else if (interest[icc][1] < currMonth && interest[icc][0] == currYear){
+                icc++;
+            }else if (interest[icc][2] < currDay && interest[icc][1] == currMonth && interest[icc][0] == currYear){
+                icc++;
+            }else{
+                interestReady = true;
+            }
+        }
+
         //payments made count
         var pmc = 0;
+        var paymentReady = false;
+        //if payment is before loan start date this needs to be checked before simulation begins
+        while(!paymentReady && pmc < payment.lenght){
+            if(payment[pmc][0] < currYear){
+                pmc++;
+            }else if (payment[pmc][1] < currMonth && payment[pmc][0] == currYear){
+                pmc++;
+            }else if (payment[pmc][2] < currDay && payment[pmc][1] == currMonth && payment[pmc][0] == currYear){
+                pmc++;
+            }else{
+                paymentReady = true;
+            }
+        }
+
+
 
         var stuckInLoop = false;
         var interestForInterval = 0;
@@ -323,7 +352,7 @@
         if (!stuckInLoop)
             console.log("Loan finished normally and paid of principle");
         console.log("amountOfPayments Remaining: " + amountOfPayments);
-        console.log("total amount spent on repayments: " + (totalInterestCharged + startPrinciple));
+        console.log("total amount spent on repayments: " + (totalInterestCharged + startPrinciple + currPrinciple));//currPrinciple to remove negative amount
         console.log("totalInterestCharged: " + totalInterestCharged);
 
 
