@@ -109,11 +109,11 @@ if ($validLogin || $validSession) {
             <table>
                 <tr>
                     <td>Payment Date:</td>
-                    <td><input type="date" name="date" value="" maxlength="20"></td>
+                    <td><input type="date" name="date" value="" maxlength="20" required></td>
                 </tr>
                 <tr>
                     <td>Payment Amount:</td>
-                    <td><input type="text" name="payment" value="" maxlength="20"></td>
+                    <td><input type="number" name="payment" value="" step="0.01" min="0" maxlength="20" required></td>
                 </tr>
             </table>
             <br>

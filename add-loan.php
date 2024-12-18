@@ -108,19 +108,19 @@ if ($validLogin || $validSession) {
             <table>
                 <tr>
                     <td>Start Date:</td>
-                    <td><input type="date" name="date" value="" maxlength="20"></td>
+                    <td><input type="date" name="date" value="" maxlength="20" required></td>
                 </tr>
                 <tr>
                     <td>Start Interest:</td>
-                    <td><input type="text" name="interest" value="" maxlength="20"></td>
+                    <td><input type="number" name="interest" value="" step="0.01" maxlength="3" min="0" max="100" required></td>
                 </tr>
                 <tr>
                     <td>Start Principle: (Amount left on loan)</td>
-                    <td><input type="text" name="principle" value=""></td>
+                    <td><input type="number" name="principle" min="0" step="0.01" value="" required></td>
                 </tr>
                 <tr>
                     <td>Duration: (years)</td>
-                    <td><input type="text" name="duration" value="" maxlength="3"></td>
+                    <td><input type="number" name="duration" value="" min="0" maxlength="3" required></td>
                 </tr>
                 <td>Payment Interval:</td>
                 <td>

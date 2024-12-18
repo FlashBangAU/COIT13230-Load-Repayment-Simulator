@@ -112,7 +112,7 @@
                     </tr>
                     <tr>
                         <td>New Interest Amount:</td>
-                        <td><input type="text" name="interest" value="$interest" maxlength="20" required>
+                        <td><input type="number" name="interest" value="$interest" step="0.01" maxlength="3" min="0" max="100" required>
                     </tr>
                 </table>
                 <br>

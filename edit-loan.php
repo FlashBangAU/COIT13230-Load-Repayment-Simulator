@@ -128,15 +128,15 @@
                     </tr>
                     <tr>
                         <td>Start Interest:</td>
-                        <td><input type="text" name="interest" value="$interest" maxlength="20" required></td>
+                        <td><input type="number" name="interest" value="$interest" step="0.01" maxlength="3" min="0" max="100" required></td>
                     </tr>
                     <tr>
                         <td>Start Principle: (Amount left on loan)</td>
-                        <td><input type="text" name="principle" value="$principle" required></td>
+                        <td><input type="number" name="principle" value="$principle" step="0.01" min="0" required></td>
                     </tr>
                     <tr>
                         <td>Duration: (years)</td>
-                        <td><input type="text" name="duration" value="$duration" maxlength="3" required></td>
+                        <td><input type="number" name="duration" value="$duration" min="0" maxlength="3" required></td>
                     </tr>
                     <tr>
                         <td>Payment Interval:</td>

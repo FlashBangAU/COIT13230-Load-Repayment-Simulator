@@ -109,11 +109,11 @@ if ($validLogin || $validSession) {
             <table>
                 <tr>
                     <td>Start Date:</td>
-                    <td><input type="date" name="date" value="" maxlength="20"></td>
+                    <td><input type="date" name="date" value="" maxlength="20" required></td>
                 </tr>
                 <tr>
                     <td>New Interest:</td>
-                    <td><input type="text" name="interest" value="" maxlength="20"></td>
+                    <td><input type="number" name="interest" value="$interest" step="0.01" maxlength="3" min="0" max="100" required></td>
                 </tr>
             </table>
             <br>
