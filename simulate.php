@@ -67,25 +67,19 @@
 
         echo "<br>";
 
-        $interest = '';
-        $i = 0;
+        $interestArray = [];
         while ($row = $result->fetch_assoc()) {
             $interestDate = $row['date_interest'];
             $interestAmount = $row['new_val_interest'];
-
-            if($i !=0 ){
-                $interest .= ',';
-            }
-
 
             $day = date('d', strtotime($interestDate));
             $month = date('m', strtotime($interestDate));
             $year = date('Y', strtotime($interestDate));
 
-            $interest .= '[' . $year . ',' . $month . ',' . $day . ',' . $interestAmount . ']';
-
-            $i++;
+            $interestArray[] = [(int)$year, (int)$month, (int)$day, (float)$interestAmount];
         }
+
+        $interest = json_encode($interestArray);
 
         $result->free();
         $db->close();
@@ -201,7 +195,7 @@
         var startDuration = <?php echo $durationYears; ?>;
         var startIntervalStr = <?php echo "'$paymentInterval'"; ?>;
 
-        var interest = JSON.parse('[<?php echo $interest; ?>]');
+        var interest = <?php echo $interest; ?>;
         var payment = <?php echo $payment; ?>;
 
         //test if variables are active
@@ -344,13 +338,16 @@
             }
 
 
-            if (amountOfPayments == -1)//prevents loop from getting stuck infinitly.
+            if (amountOfPayments == -2)//prevents loop from getting stuck infinitly.
                 stuckInLoop = true;
         }
 
         console.log("");
-        if (!stuckInLoop)
-            console.log("Loan finished normally and paid of principle");
+        if (!stuckInLoop){
+            console.log("Loan finished normally and paid off principle");
+        }else{
+            console.log("Got stuck in loop or excided repayments by 2 payments!");
+        }
         console.log("amountOfPayments Remaining: " + amountOfPayments);
         console.log("total amount spent on repayments: " + (totalInterestCharged + startPrinciple + currPrinciple));//currPrinciple to remove negative amount
         console.log("totalInterestCharged: " + totalInterestCharged);

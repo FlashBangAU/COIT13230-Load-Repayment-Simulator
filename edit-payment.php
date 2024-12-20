@@ -112,7 +112,7 @@
                     </tr>
                     <tr>
                         <td>Payment Amount:</td>
-                        <td><input type="number" name="payment" value="$payment" step="0.01" min="0" maxlength="20" required>
+                        <td><input type="number" name="payment" value="$payment" step="0.01" maxlength="20" required>
                     </tr>
                 </table>
                 <br>

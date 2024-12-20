@@ -113,7 +113,7 @@ if ($validLogin || $validSession) {
                 </tr>
                 <tr>
                     <td>New Interest:</td>
-                    <td><input type="number" name="interest" value="$interest" step="0.01" maxlength="3" min="0" max="100" required></td>
+                    <td><input type="number" name="interest" value="" step="0.01" maxlength="3" min="0" max="100" required></td>
                 </tr>
             </table>
             <br>
