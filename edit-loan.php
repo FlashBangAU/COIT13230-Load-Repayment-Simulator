@@ -3,6 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <script src="js/bootstrap.min.js"></script>
     <title>Edit Loan</title>
 </head>
 <body>
@@ -124,24 +129,24 @@
                 <table>
                     <tr>
                         <td>Start Date:</td>
-                        <td><input type="date" name="date" value="$date" maxlength="20" required></td>
+                        <td><input type="date" name="date" class="form-control" value="$date" maxlength="20" required></td>
                     </tr>
                     <tr>
                         <td>Start Interest:</td>
-                        <td><input type="number" name="interest" value="$interest" step="0.01" maxlength="3" min="0" max="100" required></td>
+                        <td><input type="number" name="interest" class="form-control" value="$interest" step="0.01" maxlength="3" min="0" max="100" required></td>
                     </tr>
                     <tr>
-                        <td>Start Principle: (Amount left on loan)</td>
-                        <td><input type="number" name="principle" value="$principle" step="0.01" min="0" required></td>
+                        <td>Start Principle:</td>
+                        <td><input type="number" name="principle" class="form-control" value="$principle" step="0.01" min="0" required></td>
                     </tr>
                     <tr>
                         <td>Duration: (years)</td>
-                        <td><input type="number" name="duration" value="$duration" min="0" maxlength="3" required></td>
+                        <td><input type="number" name="duration" class="form-control" value="$duration" min="0" maxlength="3" required></td>
                     </tr>
                     <tr>
                         <td>Payment Interval:</td>
                         <td>
-                        <select name="payment">
+                        <select name="payment" class="form-select">
                         <option value="$payment">$payment</option>
                         <option value="$payment2">$payment2</option>
                         <option value="$payment3">$payment3</option>
@@ -149,8 +154,8 @@
                     </tr>
                 </table>
                 <br>
-                <input type="submit" name="submit" value="Update">
-                <input type="submit" name="submit" value="Cancel">
+                <input type="submit" name="submit" class="btn btn-primary" value="Update">
+                <input type="submit" name="submit" class="btn btn-danger" value="Cancel">
             </form>
             END;
 

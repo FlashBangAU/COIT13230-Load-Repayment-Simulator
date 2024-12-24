@@ -3,6 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <script src="js/bootstrap.min.js"></script>
     <title>List of Loans</title>
     <style>
         table {border-style: outset; border-width: thin;}
@@ -91,7 +96,7 @@ END;
             echo "<td valign=\"top\">$interestDate</td>";
             echo "<td valign=\"top\">$interestAmount%</td>";
             createButtonColumn2("DB_set", $DbID, "interest_ID", $interestID, "Edit", "edit-interest.php");
-            createButtonColumn2("DB_set", $DbID, "interest_ID", $interestID, "Delete", "delete-interest.php");
+            createButtonColumn3("DB_set", $DbID, "interest_ID", $interestID, "Delete", "delete-interest.php");
             echo "</tr>";
         }
 
@@ -141,7 +146,7 @@ END;
             echo "<td valign=\"top\">$paymentDate</td>";
             echo "<td valign=\"top\">$$paymentAmount</td>";
             createButtonColumn2("DB_set", $DbID, "payment_ID", $paymentID, "Edit", "edit-payment.php");
-            createButtonColumn2("DB_set", $DbID, "payment_ID", $paymentID, "Delete", "delete-payment.php");
+            createButtonColumn3("DB_set", $DbID, "payment_ID", $paymentID, "Delete", "delete-payment.php");
             echo "</tr>";
         }
 
@@ -161,20 +166,32 @@ END;
         require('login.php');
     }
 
+    //simulate, add interest/payment button
     function createButtonColumn1($hiddenName, $hiddenValue, $buttonText, $actionPage) {
         echo "<td>";
         echo "<form action=\"$actionPage\" method=\"GET\">";
         echo "<input type=\"hidden\" name=\"$hiddenName\" value=\"$hiddenValue\">";
-        echo "<button type=\"submit\">$buttonText</button>";
+        echo "<button type=\"submit\" class=\"btn btn-primary\">$buttonText</button>";
         echo "</form>";            
         echo "</td>";
     }
+    //edit button
     function createButtonColumn2($hiddenName1, $hiddenValue1, $hiddenName2, $hiddenValue2, $buttonText, $actionPage) {
         echo "<td>";
         echo "<form action=\"$actionPage\" method=\"GET\">";
         echo "<input type=\"hidden\" name=\"$hiddenName1\" value=\"$hiddenValue1\">";
         echo "<input type=\"hidden\" name=\"$hiddenName2\" value=\"$hiddenValue2\">";
-        echo "<button type=\"submit\">$buttonText</button>";
+        echo "<button type=\"submit\" class=\"btn btn-warning\">$buttonText</button>";
+        echo "</form>";            
+        echo "</td>";
+    }
+    //delete button
+    function createButtonColumn3($hiddenName1, $hiddenValue1, $hiddenName2, $hiddenValue2, $buttonText, $actionPage) {
+        echo "<td>";
+        echo "<form action=\"$actionPage\" method=\"GET\">";
+        echo "<input type=\"hidden\" name=\"$hiddenName1\" value=\"$hiddenValue1\">";
+        echo "<input type=\"hidden\" name=\"$hiddenName2\" value=\"$hiddenValue2\">";
+        echo "<button type=\"submit\" class=\"btn btn-danger\">$buttonText</button>";
         echo "</form>";            
         echo "</td>";
     }

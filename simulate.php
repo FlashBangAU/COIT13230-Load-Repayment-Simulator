@@ -3,6 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <script src="js/bootstrap.min.js"></script>
     <title>List of Loans</title>
     <style>
         table {border-style: outset; border-width: thin;}
@@ -166,24 +171,6 @@
             echo "Could not log you in.<br>";
         }
         require('login.php');
-    }
-
-    function createButtonColumn1($hiddenName, $hiddenValue, $buttonText, $actionPage) {
-        echo "<td>";
-        echo "<form action=\"$actionPage\" method=\"GET\">";
-        echo "<input type=\"hidden\" name=\"$hiddenName\" value=\"$hiddenValue\">";
-        echo "<button type=\"submit\">$buttonText</button>";
-        echo "</form>";            
-        echo "</td>";
-    }
-    function createButtonColumn2($hiddenName1, $hiddenValue1, $hiddenName2, $hiddenValue2, $buttonText, $actionPage) {
-        echo "<td>";
-        echo "<form action=\"$actionPage\" method=\"GET\">";
-        echo "<input type=\"hidden\" name=\"$hiddenName1\" value=\"$hiddenValue1\">";
-        echo "<input type=\"hidden\" name=\"$hiddenName2\" value=\"$hiddenValue2\">";
-        echo "<button type=\"submit\">$buttonText</button>";
-        echo "</form>";            
-        echo "</td>";
     }
     ?>
 

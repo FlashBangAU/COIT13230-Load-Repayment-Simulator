@@ -3,6 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <script src="js/bootstrap.min.js"></script>
     <title>Edit Interest</title>
 </head>
 <body>
@@ -108,17 +113,17 @@
                 <table>
                     <tr>
                         <td>New Interest Date:</td>
-                        <td><input type="date" name="date" value="$date" maxlength="20" required>
+                        <td><input type="date" name="date" class="form-control" value="$date" maxlength="20" required>
                     </tr>
                     <tr>
                         <td>New Interest Amount:</td>
-                        <td><input type="number" name="interest" value="$interest" step="0.01" maxlength="3" min="0" max="100" required>
+                        <td><input type="number" name="interest" class="form-control" value="$interest" step="0.01" maxlength="3" min="0" max="100" required>
                     </tr>
                 </table>
                 <br>
                 <input type="hidden" name="DB_set" value="$DbID">
-                <input type="submit" name="submit" value="Edit">
-                <input type="submit" name="submit" value="Cancel">
+                <input type="submit" name="submit" class="btn btn-primary" value="Update">
+                <input type="submit" name="submit" class="btn btn-danger" value="Cancel">
             </form>
 END;
 

@@ -1,3 +1,8 @@
+<script src="js/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/custom.css">
+<script src="js/bootstrap.min.js"></script>
+
 <?php
 session_start();
 $validSession = require('check-session.php');
@@ -108,31 +113,31 @@ if ($validLogin || $validSession) {
             <table>
                 <tr>
                     <td>Start Date:</td>
-                    <td><input type="date" name="date" value="" maxlength="20" required></td>
+                    <td><input type="date" name="date" class="form-control" value="" maxlength="20" required></td>
                 </tr>
                 <tr>
                     <td>Start Interest:</td>
-                    <td><input type="number" name="interest" value="" step="0.01" maxlength="3" min="0" max="100" required></td>
+                    <td><input type="number" name="interest" class="form-control" value="" step="0.01" maxlength="3" min="0" max="100" required></td>
                 </tr>
                 <tr>
-                    <td>Start Principle: (Amount left on loan)</td>
-                    <td><input type="number" name="principle" min="0" step="0.01" value="" required></td>
+                    <td>Start Principle:</td>
+                    <td><input type="number" name="principle" class="form-control" min="0" step="0.01" value="" required></td>
                 </tr>
                 <tr>
                     <td>Duration: (years)</td>
-                    <td><input type="number" name="duration" value="" min="0" maxlength="3" required></td>
+                    <td><input type="number" name="duration" class="form-control" value="" min="0" maxlength="3" required></td>
                 </tr>
                 <td>Payment Interval:</td>
                 <td>
-                    <select name="payment">
+                    <select name="payment" class="form-select">
                     <option value="Weekly">Weekly</option>
                     <option value="Fortnightly">Fortnightly</option>
                     <option value="Monthly">Monthly</option>
                 </td>
             </table>
             <br>
-            <input type="submit" name="submit" value="Add">
-            <input type="submit" name="submit" value="Cancel">
+            <input type="submit" name="submit" class="btn btn-primary" value="Add">
+            <input type="submit" name="submit" class="btn btn-danger" value="Cancel">
         </form>
         END;
 

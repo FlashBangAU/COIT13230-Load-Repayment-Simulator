@@ -3,6 +3,11 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<script src="js/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <script src="js/bootstrap.min.js"></script>
 	<title>Home</title>
 </head>
 <body>
@@ -19,8 +24,8 @@
 			echo "Welcome, $name.<br><br>";
 
 			echo "<h2>Your Options</h2>";
-			echo '<p><a href="loans.php">View all home loans</a><br>';
-			echo '<a href="add-loan.php">Add a loan</a></p>';
+			echo '<p><a href="loans.php" class="btn btn-primary">View all home loans</a><br>';
+			echo '<a href="add-loan.php" class="btn btn-primary">Add a loan</a></p>';
 
 			include("footer-logged-in.php");
 		}else{

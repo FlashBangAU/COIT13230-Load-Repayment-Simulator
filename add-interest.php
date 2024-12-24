@@ -1,3 +1,8 @@
+<script src="js/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/custom.css">
+<script src="js/bootstrap.min.js"></script>
+
 <?php
 session_start();
 $validSession = require('check-session.php');
@@ -109,16 +114,16 @@ if ($validLogin || $validSession) {
             <table>
                 <tr>
                     <td>Start Date:</td>
-                    <td><input type="date" name="date" value="" maxlength="20" required></td>
+                    <td><input type="date" name="date" class="form-control" value="" maxlength="20" required></td>
                 </tr>
                 <tr>
                     <td>New Interest:</td>
-                    <td><input type="number" name="interest" value="" step="0.01" maxlength="3" min="0" max="100" required></td>
+                    <td><input type="number" name="interest" class="form-control" value="" step="0.01" maxlength="3" min="0" max="100" required></td>
                 </tr>
             </table>
             <br>
-            <input type="submit" name="submit" value="Add">
-            <input type="submit" name="submit" value="Cancel">
+            <input type="submit" name="submit" class="btn btn-primary" value="Add">
+            <input type="submit" name="submit" class="btn btn-danger" value="Cancel">
         </form>
         END;
 
