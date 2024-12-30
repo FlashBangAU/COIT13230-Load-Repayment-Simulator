@@ -4,10 +4,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js">
+    </script>
+
     <script src="js/jquery-3.7.1.min.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
     <script src="js/bootstrap.min.js"></script>
+
     <title>List of Loans</title>
     <style>
         table {border-style: outset; border-width: thin;}
@@ -21,8 +29,6 @@
     $validLogin = require("check-login.php");
 
     if ($validLogin || $validSession) {
-        echo '<h1>List of Loans</h1>';
-
         require("db-connection.php");
 
         // Validate and get DB_set from GET parameter
@@ -51,8 +57,6 @@
             $startPrinciple = $row['start_principle'];
             $durationYears = $row['duration_years'];
             $paymentInterval = $row['payment_interval'];
-
-            echo "<b>Loan Start Date:</b> $startDate    <b>Beginning Interest:</b> $startInterest%    <b>Principle:</b> $$startPrinciple <b>Duration:</b> $durationYears years <b>Interest Added Every:</b> $paymentInterval <br>";
         }
 
 
@@ -104,7 +108,6 @@
 
         $numResults = $result->num_rows;
 
-        echo "<br>";
 
         $paymentArray = [];
         while ($row = $result->fetch_assoc()) {
@@ -125,47 +128,78 @@
         $db->close();
 
         echo <<<END
-            <h3>Loan Simulation Results</h3>
-             <table>
-                    <tr>
-                        <td>Start Date:</td>
-                        <td>$startDate</td>
-                        <td>        </td>
-                        <td>Finish Date:</td>
-                        <td><div id="currDate"></div></td>
-                    </tr>
-                    <tr>
-                        <td>Start Principle:</td>
-                        <td>$$startPrinciple</td>
-                        <td>        </td>
-                        <td>Total Paid:</td>
-                        <td><div id="totalPaid"></div></td>
-                    </tr>
-                    <tr>
-                        <td>Start Interest:</td>
-                        <td>$startInterest%</td>
-                        <td>        </td>
-                        <td>Interest Paid:</td>
-                        <td><div id="interestPaid"></div></td>
-                    </tr>
-                    <tr>
-                        <td>Duration:</td>
-                        <td>$durationYears years</td>
-                        <td>        </td>
-                        <td>Time till finish:</td>
-                        <td><div id="timeTaken"></div></td>
-                    </tr>
-                    <tr>
-                        <td>Payment Interval:</td>
-                        <td>$paymentInterval</td>
-                        <td>        </td>
-                    </td>
-                    </tr>
-                </table>
+        <body>
+            <div class="container d-flex flex-column min-vh-100">
+                <h1 class="text-center my-4">List of Loans</h1>
+                <div class="mb-3 text-center row">
+                    <div class="col-lg">
+                        <b>Loan Start Date:</b> $startDate &nbsp; 
+                    </div>
+                    <div class="col-lg">
+                        <b>Beginning Interest:</b> $startInterest% &nbsp; 
+                    </div>
+                    <div class="col-lg">
+                        <b>Principle:</b> $$startPrinciple &nbsp; 
+                    </div>
+                    <div class="col-lg">
+                        <b>Duration:</b> $durationYears years &nbsp; 
+                    </div>
+                    <div class="col-lg">
+                        <b>Interest Added Every:</b> $paymentInterval
+                    </div>
+                </div>
+                <h3 class="mt-3">Loan Simulation Results</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td><b>Start Date:</b></td>
+                                <td>$startDate</td>
+                                <td></td>
+                                <td><b>Finish Date:</b></td>
+                                <td><div id="currDate"></div></td>
+                            </tr>
+                            <tr>
+                                <td><b>Start Principle:</b></td>
+                                <td>$$startPrinciple</td>
+                                <td></td>
+                                <td><b>Total Paid:</b></td>
+                                <td><div id="totalPaid"></div></td>
+                            </tr>
+                            <tr>
+                                <td><b>Start Interest:</b></td>
+                                <td>$startInterest%</td>
+                                <td></td>
+                                <td><b>Interest Paid:</b></td>
+                                <td><div id="interestPaid"></div></td>
+                            </tr>
+                            <tr>
+                                <td><b>Duration:</b></td>
+                                <td>$durationYears years</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><b>Payment Interval:</b></td>
+                                <td>$paymentInterval</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <aside class="mt-3">
+                    <div class="card chart-container">
+                        <div class="card-body">
+                            <canvas id="chart" class="w-100"></canvas>
+                        </div>
+                    </div>
+                </aside>
         END;
+                require('footer-logged-in.php');
+            echo "</div>";
+        echo "</body>";
 
-
-        require('footer-logged-in.php');
     } else {
         if (isset($_SESSION['valid_user'])) {
             echo "Could not log you in.<br>";
@@ -225,6 +259,25 @@
                 break;
         }
         console.log("interval: " + interval);
+
+
+//set variables for graph for after simulation
+        const principleGraph = [startPrinciple.toFixed(2)];
+        const totalGraph = [0];
+        const principleInterestGraph = [startPrinciple.toFixed(2)];
+
+        var totalPaidGraph = 0;
+        var interestGraph = 0;
+
+        var countForYearPass = 0;
+
+        var yearsCount = 1;
+
+        const yearsGraph = [];
+        for(var count = 0;  count <= startDuration; count++){
+            yearsGraph[count] = Number(currYear) + count;
+        }
+
 
         var currPrinciple = startPrinciple;
 
@@ -300,6 +353,7 @@
                     //calculates new PMT
                     PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
                     console.log("PMT set to: " + PMT);
+                    totalPaidGraph += payment[pmc][3];
 
                     pmc++; 
                 }
@@ -308,6 +362,7 @@
 
 //calculate daily interest for interval interest
             interestForInterval = interestForInterval + (currPrinciple * currInterest);
+            interestGraph = interestGraph + (currPrinciple * currInterest);
 
 //add repayment at interval and set new interval
             //reset amount left in interval
@@ -316,6 +371,7 @@
                 interval = setInterval(startIntervalStr, currMonth, currYear);
 
                 totalInterestCharged = totalInterestCharged + (PMT - (PMT - interestForInterval));
+                totalPaidGraph += PMT;
                 
                 currPrinciple = currPrinciple - (PMT - interestForInterval);
                 //console.log("interestForInterval: " + interestForInterval);
@@ -335,6 +391,18 @@
                 daysLeftInMonth = daysInMonth(currMonth, currYear);
             }
 
+//calculate graph information
+            countForYearPass++;
+            if(countForYearPass == 366 || countForYearPass == 365 && currYear % 4 != 0 && (currYear % 100 == 0 || currYear % 400 != 0)){
+                countForYearPass = 0;
+                principleGraph[yearsCount] = currPrinciple.toFixed(2);
+
+                totalGraph[yearsCount] = totalPaidGraph.toFixed(2);
+
+                principleInterestGraph[yearsCount] = (currPrinciple + interestGraph).toFixed(2);
+                interestGraph = 0;
+                yearsCount++;
+            }
 
             if (amountOfPayments == -2)//prevents loop from getting stuck infinitly.
                 stuckInLoop = true;
@@ -350,6 +418,18 @@
         console.log("total amount spent on repayments: " + (totalInterestCharged + startPrinciple + currPrinciple));//currPrinciple to remove negative amount
         console.log("totalInterestCharged: " + totalInterestCharged);
 
+//if loan finishes a little early for the year mark for the graph
+        if(yearsCount == principleGraph.length){
+            console.log("");
+            console.log("Adding last value to graphs");
+            principleGraph[yearsCount] = currPrinciple.toFixed(2);
+            totalGraph[yearsCount] = totalPaidGraph.toFixed(2);
+            principleInterestGraph[yearsCount] = (currPrinciple + interestGraph).toFixed(2);
+
+            console.log("Principle Graph: " + principleGraph);
+            console.log("Total Paid Graph: " + totalGraph);
+            console.log("Principle and Interest Graph: " + principleInterestGraph);
+        }
 
 
         function newAnnualInterest(startIntervalStr, newInterest){
@@ -427,6 +507,45 @@
         document.getElementById("totalPaid").innerHTML = "$"+(totalInterestCharged+startPrinciple).toFixed(2);
         document.getElementById("interestPaid").innerHTML = "$"+totalInterestCharged.toFixed(2);
 
+
+
     </script>
+
+    <!--graph-->
+    <script>
+          const ctx = document.getElementById("chart").getContext('2d');
+          const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: yearsGraph,
+              datasets: [{
+                label: 'Principle Remaining',
+                backgroundColor: 'rgba(13, 162, 255, 0.2)',
+                borderColor: 'rgb(0, 116, 189)',
+                data: principleGraph,
+              },{
+                label: 'Princple With Interest Remaining',
+                backgroundColor: 'rgba(74, 255, 77, 0.2)',
+                borderColor: 'rgb(0, 199, 3)',
+                data: principleInterestGraph
+            },{
+                label: 'Total Paid',
+                backgroundColor: 'rgba(255, 253, 115, 0.2)',
+                borderColor: 'rgb(217, 213, 4)',
+                data: totalGraph
+            }]
+            },
+            options: {
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: true,
+                  }
+                }]
+              }
+            },
+          });
+    </script>
+
 </body>
 </html>
