@@ -276,11 +276,17 @@
 //loop to calculate loan
         while(currPrinciple > 0 && stuckInLoop == false)
         {
-//change interest if possible
+//change interest if possible 
             if(icc < interest.length){
                 if(interest[icc][0] == currYear && interest[icc][1] == currMonth && interest[icc][2] == currDay){
                     currInterest = interest[icc][3] / 100 / 365;
                     console.log("Changed interest to " + interest[icc][3] +  "%.");
+
+                    //calculates new PMT
+                    currInterestPaymentsAnnual = newAnnualInterest(startIntervalStr, interest[icc][3]/100);
+                    PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
+                    console.log("PMT set to: " + PMT);
+
                     icc++;
                 }
             }
@@ -290,6 +296,11 @@
                 if(payment[pmc][0] == currYear && payment[pmc][1] == currMonth && payment[pmc][2] == currDay){
                     currPrinciple -= payment[pmc][3];
                     console.log("Additional repayment made: $" + payment[pmc][3]);
+
+                    //calculates new PMT
+                    PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
+                    console.log("PMT set to: " + PMT);
+
                     pmc++; 
                 }
             }
