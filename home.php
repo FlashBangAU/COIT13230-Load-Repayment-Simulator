@@ -19,7 +19,7 @@
 		$validLogin = require("check-login.php");
 
 		if($validLogin || $validSession){
-			$name = $_SESSION['valid-user'];
+			$name = $_SESSION['username'];
 
 			echo "Welcome, $name.<br><br>";
 
