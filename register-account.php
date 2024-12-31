@@ -67,7 +67,7 @@
 
 	    if ($stmt->execute()) {
 	        echo "<p class='text-success'>Registration successful. Redirecting to login...</p>";
-	        header("Refresh: 3; url=login.php");
+	        header("Refresh: 2.5; url=login.php");
 	    } else {
 	        echo "<p class='text-danger'>Error registering account. Please try again.</p>";
 	    }

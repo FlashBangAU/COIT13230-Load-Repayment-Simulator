@@ -88,7 +88,7 @@
 
                 // Validate input
                 if (empty($_POST['date']) || empty($_POST['interest']) || empty($_POST['principle']) || empty($_POST['duration']) || empty($_POST['payment'])) {
-                    echo "Error: All fields are required.";
+                    echo "<p class='text-danger'>Error: All fields are required.</p>";
                 } else {
                     $date = $_POST['date'];
                     $interest = $_POST['interest'];
@@ -116,7 +116,7 @@
                         echo "Error preparing statement: " . $db->error;
                     }
 
-                    echo "<a href=\"loans.php\">Back to Loan List</a>";
+                    echo "<a href=\"loans.php\" class=\"btn btn-primary\">Back to Loan List</a>";
                     echo "<br><hr>";
                     $db->close();
                     exit;
@@ -129,19 +129,19 @@
                 <table>
                     <tr>
                         <td>Start Date:</td>
-                        <td><input type="date" name="date" class="form-control" value="$date" maxlength="20" required></td>
+                        <td><input type="date" name="date" class="form-control" value="$date" maxlength="20"></td>
                     </tr>
                     <tr>
                         <td>Start Interest:</td>
-                        <td><input type="number" name="interest" class="form-control" value="$interest" step="0.01" maxlength="3" min="0" max="100" required></td>
+                        <td><input type="number" name="interest" class="form-control" value="$interest" step="0.01" maxlength="3" min="0" max="100"></td>
                     </tr>
                     <tr>
                         <td>Start Principle:</td>
-                        <td><input type="number" name="principle" class="form-control" value="$principle" step="0.01" min="0" required></td>
+                        <td><input type="number" name="principle" class="form-control" value="$principle" step="0.01" min="0"></td>
                     </tr>
                     <tr>
                         <td>Duration: (years)</td>
-                        <td><input type="number" name="duration" class="form-control" value="$duration" min="0" maxlength="3" required></td>
+                        <td><input type="number" name="duration" class="form-control" value="$duration" min="0" maxlength="3"></td>
                     </tr>
                     <tr>
                         <td>Payment Interval:</td>

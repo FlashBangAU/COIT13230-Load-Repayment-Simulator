@@ -78,7 +78,7 @@
                     echo "Failed to Delete Loan in Database<br>";
                 }
 
-                echo "<a href=\"loans.php\">Back to Loan List</a>";
+                echo "<a href=\"loans.php\" class=\"btn btn-primary\">Back to Loan List</a>";
                 echo "<br><hr>";
                 exit;
             }
@@ -111,8 +111,8 @@
                 </table>
                 <br>
                 <input type="hidden" name="DB_set" value="$DbID">
-                <input type="submit" name="submit" value="Delete">
-                <input type="submit" name="submit" value="Cancel">
+                <input type="submit" name="submit" class="btn btn-danger" value="Delete">
+                <input type="submit" name="submit" class="btn btn-primary" value="Cancel">
             </form>
 END;
 

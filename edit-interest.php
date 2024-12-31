@@ -64,13 +64,13 @@
 
                 if ($submit == "Cancel") {
                     $db->close();
-                    header('Location: loans.php');
+                    header("Location: loan-elements.php?DB_set=$DbID");
                     exit();
                 }
 
                 // Validate input
                 if (empty($_POST['date']) || empty($_POST['interest'])){
-                    echo "Error: All fields are required.";
+                    echo "<p class='text-danger'>Error: All fields are required.</p>";
                 } else {
                     $newDate = $_POST['date'];
                     $newInterest = $_POST['interest'];
@@ -99,7 +99,7 @@
                             echo "Error preparing statement: " . $db->error;
                         }
 
-                        echo "<a href=\"loan-elements.php?DB_set=$DbID\">Back to Loan Elements</a>";
+                        echo "<a href=\"loan-elements.php?DB_set=$DbID\" class=\"btn btn-primary\">Back to Loan Elements</a>";
                         echo "<br><hr>";
                         $db->close();
                         exit;
@@ -113,11 +113,11 @@
                 <table>
                     <tr>
                         <td>New Interest Date:</td>
-                        <td><input type="date" name="date" class="form-control" value="$date" maxlength="20" required>
+                        <td><input type="date" name="date" class="form-control" value="$date" maxlength="20">
                     </tr>
                     <tr>
                         <td>New Interest Amount:</td>
-                        <td><input type="number" name="interest" class="form-control" value="$interest" step="0.01" maxlength="3" min="0" max="100" required>
+                        <td><input type="number" name="interest" class="form-control" value="$interest" step="0.01" maxlength="3" min="0" max="100">
                     </tr>
                 </table>
                 <br>

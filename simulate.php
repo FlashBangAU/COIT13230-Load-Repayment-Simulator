@@ -177,13 +177,13 @@
                                 <td><b>Duration:</b></td>
                                 <td>$durationYears years</td>
                                 <td></td>
-                                <td></td>
-                                <td></td>
                             </tr>
                             <tr>
                                 <td><b>Payment Interval:</b></td>
                                 <td>$paymentInterval</td>
                                 <td></td>
+                                <td></td>
+                                <td><a href="loan-elements.php?DB_set=$DbID" class="btn btn-warning" style="float: right">Back to Changing Variables</a></td>
                             </tr>
                         </tbody>
                     </table>

@@ -17,13 +17,14 @@ if ($validLogin || $validSession) {
         $submit = $_POST['submit'];
         if ($submit == "Cancel") {
             $db->close();
-            header('Location: home.php');
+            header('Location: loans.php');
             exit();
         }
 
         // Validate input
         if (empty($_POST['date']) || empty($_POST['interest']) || empty($_POST['principle']) || empty($_POST['duration']) || empty($_POST['payment'])) {
-            echo "Error: All fields are required.";
+            echo "<p class='text-danger'>All Fields are Requires. Redirecting to add loan...</p>";
+            header("Refresh: 2.5; url=add-loan.php");
             $db->close();
             exit;
         }
@@ -103,7 +104,7 @@ if ($validLogin || $validSession) {
             echo "Failed to Add Loan to Database<br>";
         }
 
-        echo "<a href=\"loans.php\">Back to Loan List</a>";
+        echo "<a href=\"loans.php\" class=\"btn btn-primary\">Back to Loan List</a>";
         echo "<br><hr>";
         exit;
     } else {
@@ -113,19 +114,19 @@ if ($validLogin || $validSession) {
             <table>
                 <tr>
                     <td>Start Date:</td>
-                    <td><input type="date" name="date" class="form-control" value="" maxlength="20" required></td>
+                    <td><input type="date" name="date" class="form-control" value="" maxlength="20"></td>
                 </tr>
                 <tr>
                     <td>Start Interest:</td>
-                    <td><input type="number" name="interest" class="form-control" value="" step="0.01" maxlength="3" min="0" max="100" required></td>
+                    <td><input type="number" name="interest" class="form-control" value="" step="0.01" maxlength="3" min="0" max="100"></td>
                 </tr>
                 <tr>
                     <td>Start Principle:</td>
-                    <td><input type="number" name="principle" class="form-control" min="0" step="0.01" value="" required></td>
+                    <td><input type="number" name="principle" class="form-control" min="0" step="0.01" value=""></td>
                 </tr>
                 <tr>
                     <td>Duration: (years)</td>
-                    <td><input type="number" name="duration" class="form-control" value="" min="0" maxlength="3" required></td>
+                    <td><input type="number" name="duration" class="form-control" value="" min="0" maxlength="3"></td>
                 </tr>
                 <td>Payment Interval:</td>
                 <td>

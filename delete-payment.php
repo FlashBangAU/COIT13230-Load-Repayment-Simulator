@@ -83,7 +83,7 @@
                     echo "Failed to Delete Payment in Database<br>";
                 }
 
-                echo "<a href=\"loan-elements.php?DB_set=$DbID\">Back to Loan Elements</a>";
+                echo "<a href=\"loan-elements.php?DB_set=$DbID\" class=\"btn btn-primary\">Back to Loan Elements</a>";
                 echo "<br><hr>";
                 exit;
             }
@@ -103,8 +103,8 @@
                 </table>
                 <br>
                 <input type="hidden" name="DB_set" value="$DbID">
-                <input type="submit" name="submit" value="Delete">
-                <input type="submit" name="submit" value="Cancel">
+                <input type="submit" name="submit" class="btn btn-danger" value="Delete">
+                <input type="submit" name="submit" class="btn btn-primary" value="Cancel">
             </form>
 END;
 

@@ -14,9 +14,9 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
-    // Query to validate email and password
-    $query = "SELECT user_ID, username FROM user_accounts 
-              WHERE email = ? AND password = SHA2(?, 256)";
+    // Query to validate email
+    $query = "SELECT user_ID, username, password FROM user_accounts 
+              WHERE email = ?";
     
     $stmt = $db->prepare($query);
 
@@ -26,7 +26,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         exit;
     }
 
-    $stmt->bind_param("ss", $email, $password);
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     
     $result = $stmt->get_result();
@@ -40,7 +40,9 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 
     $user = $result->fetch_assoc();
 
-    if ($user) {
+    // Verify the password
+    if (password_verify($password, $user['password'])) {
+        // Start session and set session variables
         $_SESSION['valid-user'] = $email;
         $_SESSION['username'] = $user['username'];
         $_SESSION['id-user'] = $user['user_ID'];
