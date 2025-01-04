@@ -57,7 +57,16 @@
             $row = $result->fetch_assoc();
             $date = htmlspecialchars($row['date_interest']);
             $interest = htmlspecialchars($row['new_val_interest']);
+            $changedPMT = htmlspecialchars($row['update_PMT']);
             $stmtLoanDetails->close();
+
+            if($changedPMT == 1){
+                $updatePMTinput = '<input type="hidden" name="updatePMT" value="0">
+                        <td><input type="checkbox" name="updatePMT" class="form-check-input" value="1" checked></td>';
+            }else{
+                $updatePMTinput = '<input type="hidden" name="updatePMT" value="0">
+                        <td><input type="checkbox" name="updatePMT" class="form-check-input" value="1"></td>';
+            }
 
             if (isset($_POST['submit'])) {
                 $submit = $_POST['submit'];
@@ -74,17 +83,18 @@
                 } else {
                     $newDate = $_POST['date'];
                     $newInterest = $_POST['interest'];
+                    $updatePMT = $_POST['updatePMT'];
 
                     // Check if values have changed
-                    if ($newDate === $date && $newInterest === $interest) {
+                    if ($newDate === $date && $newInterest === $interest && $updatePMT === $changedPMT) {
                         echo "No changes made. Please modify the fields before submitting.";
                     } else {
                         // Proceed to edit loan if changes were made
-                        $query = "UPDATE interest_repayments SET date_interest = ?, new_val_interest = ? WHERE ID_user = ? AND DB_set = ? AND interest_ID = ?";
+                        $query = "UPDATE interest_repayments SET date_interest = ?, new_val_interest = ?, update_PMT = ? WHERE ID_user = ? AND DB_set = ? AND interest_ID = ?";
                         $stmt = $db->prepare($query);
 
                         if ($stmt) {
-                            $stmt->bind_param("sdiii", $newDate, $newInterest, $search, $DbID, $interestID);
+                            $stmt->bind_param("sdiiii", $newDate, $newInterest, $updatePMT, $search, $DbID, $interestID);
                             $stmt->execute();
                             $affectedRows = $stmt->affected_rows;
                             $stmt->close();
@@ -118,6 +128,10 @@
                     <tr>
                         <td>New Interest Amount:</td>
                         <td><input type="number" name="interest" class="form-control" value="$interest" step="0.01" maxlength="3" min="0" max="100">
+                    </tr>
+                    <tr>
+                        <td>Update Payment Amount: <br>(Check with bank, automatic if increase)</td>
+                        $updatePMTinput
                     </tr>
                 </table>
                 <br>

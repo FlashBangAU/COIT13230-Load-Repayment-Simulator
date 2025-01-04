@@ -52,11 +52,21 @@
             $db->close();
             exit;
         }
+        
 
         $row = $result->fetch_assoc();
         $date = htmlspecialchars($row['date_additional_payment']);
         $payment = htmlspecialchars($row['amount_additional_payments']);
+        $changedPMT = htmlspecialchars($row['update_PMT']);
         $stmtLoanDetails->close();
+
+        if($changedPMT == 1){
+            $updatePMTinput = '<input type="hidden" name="updatePMT" value="0">
+                    <td><input type="checkbox" name="updatePMT" class="form-check-input" value="1" checked></td>';
+        }else{
+            $updatePMTinput = '<input type="hidden" name="updatePMT" value="0">
+                    <td><input type="checkbox" name="updatePMT" class="form-check-input" value="1"></td>';
+        }
 
         if (isset($_POST['submit'])) {
             $submit = $_POST['submit'];
@@ -82,17 +92,18 @@
             } else {
                 $newDate = $_POST['date'];
                 $newPayment = $_POST['payment'];
+                $updatePMT = $_POST['updatePMT'];
 
                 // Check if values have changed
-                if ($newDate === $date && $newPayment === $payment) {
+                if ($newDate === $date && $newPayment === $payment && $updatePMT === $changedPMT) {
                     echo "No changes made. Please modify the fields before submitting.";
                 } else {
                     // Proceed to edit loan if changes were made
-                    $query = "UPDATE additional_payments SET date_additional_payment = ?, amount_additional_payments = ? WHERE ID_user = ? AND DB_set = ? AND payment_ID = ?";
+                    $query = "UPDATE additional_payments SET date_additional_payment = ?, amount_additional_payments = ?, update_PMT = ? WHERE ID_user = ? AND DB_set = ? AND payment_ID = ?";
                     $stmt = $db->prepare($query);
 
                     if ($stmt) {
-                        $stmt->bind_param("sdiii", $newDate, $newPayment, $search, $DbID, $paymentID);
+                        $stmt->bind_param("sdiiii", $newDate, $newPayment, $updatePMT, $search, $DbID, $paymentID);
                         $stmt->execute();
                         $affectedRows = $stmt->affected_rows;
                         $stmt->close();
@@ -126,6 +137,10 @@
                 <tr>
                     <td>Payment Amount:</td>
                     <td><input type="number" name="payment" class="form-control" value="$payment" step="0.01" maxlength="20"></td>
+                </tr>
+                <tr>
+                    <td>Update Payment Amount: <br>(Check with bank)</td>
+                    $updatePMTinput
                 </tr>
             </table>
             <br>

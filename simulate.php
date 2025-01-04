@@ -80,12 +80,13 @@
         while ($row = $result->fetch_assoc()) {
             $interestDate = $row['date_interest'];
             $interestAmount = $row['new_val_interest'];
+            $interestUpdatePMT = $row['update_PMT'];
 
             $day = date('d', strtotime($interestDate));
             $month = date('m', strtotime($interestDate));
             $year = date('Y', strtotime($interestDate));
 
-            $interestArray[] = [(int)$year, (int)$month, (int)$day, (float)$interestAmount];
+            $interestArray[] = [(int)$year, (int)$month, (int)$day, (float)$interestAmount, (int)$interestUpdatePMT];
         }
 
         $interest = json_encode($interestArray);
@@ -113,12 +114,13 @@
         while ($row = $result->fetch_assoc()) {
             $paymentDate = $row['date_additional_payment'];
             $paymentAmount = $row['amount_additional_payments'];
+            $paymentUpdatePMT = $row['update_PMT'];
 
             $day = date('d', strtotime($paymentDate));
             $month = date('m', strtotime($paymentDate));
             $year = date('Y', strtotime($paymentDate));
 
-            $paymentArray[] = [(int)$year, (int)$month, (int)$day, (float)$paymentAmount];
+            $paymentArray[] = [(int)$year, (int)$month, (int)$day, (float)$paymentAmount, (int)$paymentUpdatePMT];
         }
 
         $payment = json_encode($paymentArray);
@@ -332,13 +334,16 @@
 //change interest if possible 
             if(icc < interest.length){
                 if(interest[icc][0] == currYear && interest[icc][1] == currMonth && interest[icc][2] == currDay){
+                    var lastInterest = currInterest;
                     currInterest = interest[icc][3] / 100 / 365;
                     console.log("Changed interest to " + interest[icc][3] +  "%.");
 
                     //calculates new PMT
                     currInterestPaymentsAnnual = newAnnualInterest(startIntervalStr, interest[icc][3]/100);
-                    PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
-                    console.log("PMT set to: " + PMT);
+                    if(interest[icc][4] == 1 || lastInterest < currInterest){                    
+                        PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
+                        console.log("PMT set to: " + PMT);
+                    }   
 
                     icc++;
                 }
@@ -351,8 +356,10 @@
                     console.log("Additional repayment made: $" + payment[pmc][3]);
 
                     //calculates new PMT
-                    PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
-                    console.log("PMT set to: " + PMT);
+                    if(payment[icc][4] == 1){                    
+                        PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
+                        console.log("PMT set to: " + PMT);
+                    }
                     totalPaidGraph += payment[pmc][3];
 
                     pmc++; 

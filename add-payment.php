@@ -48,6 +48,7 @@ if ($validLogin || $validSession) {
 
         $date = $_POST['date'];
         $payment = $_POST['payment'];
+        $updatePMT = $_POST['updatePMT'];
         $search = $_SESSION['id-user']; // Logged-in user's ID
 
         // Find the next available payment_ID for the specified DB_set
@@ -88,12 +89,12 @@ if ($validLogin || $validSession) {
         }
 
         // Insert the new payment into the database
-        $query = "INSERT INTO additional_payments (ID_user, DB_set, payment_ID, date_additional_payment, amount_additional_payments)
-            VALUES (?, ?, ?, ?, ?)";
+        $query = "INSERT INTO additional_payments (ID_user, DB_set, payment_ID, date_additional_payment, amount_additional_payments, update_PMT)
+            VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $db->prepare($query);
 
         if ($stmt) {
-            $stmt->bind_param("iiisd", $search, $DbID, $nextPaymentID, $date, $payment);
+            $stmt->bind_param("iiisdi", $search, $DbID, $nextPaymentID, $date, $payment, $updatePMT);
             $stmt->execute();
 
             $affectedRows = $stmt->affected_rows;
@@ -127,6 +128,11 @@ if ($validLogin || $validSession) {
                 <tr>
                     <td>Payment Amount:</td>
                     <td><input type="number" name="payment" class="form-control" value="" step="0.01" maxlength="20"></td>
+                </tr>
+                <tr>
+                    <td>Update Payment Amount: <br>(Check with bank)</td>
+                    <input type="hidden" name="updatePMT" value="0">
+                    <td><input type="checkbox" name="updatePMT" class="form-check-input" value="1"></td>
                 </tr>
             </table>
             <br>

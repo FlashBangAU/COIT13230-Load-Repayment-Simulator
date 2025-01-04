@@ -47,6 +47,7 @@ if ($validLogin || $validSession) {
 
         $date = $_POST['date'];
         $interest = $_POST['interest'];
+        $updatePMT = $_POST['updatePMT'];
         $search = $_SESSION['id-user']; // Logged-in user's ID
 
         // Find the next available interest_ID for the specified DB_set
@@ -87,12 +88,12 @@ if ($validLogin || $validSession) {
         }
 
         // Insert the new interest into the database
-        $query = "INSERT INTO interest_repayments (ID_user, DB_set, interest_ID, date_interest, new_val_interest)
-            VALUES (?, ?, ?, ?, ?)";
+        $query = "INSERT INTO interest_repayments (ID_user, DB_set, interest_ID, date_interest, new_val_interest, update_PMT)
+            VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $db->prepare($query);
 
         if ($stmt) {
-            $stmt->bind_param("iiisd", $search, $DbID, $nextInterestID, $date, $interest);
+            $stmt->bind_param("iiisdi", $search, $DbID, $nextInterestID, $date, $interest, $updatePMT);
             $stmt->execute();
             $affectedRows = $stmt->affected_rows;
             $stmt->close();
@@ -125,6 +126,11 @@ if ($validLogin || $validSession) {
                 <tr>
                     <td>New Interest (%):</td>
                     <td><input type="number" name="interest" class="form-control" step="0.01" min="0" max="100"></td>
+                </tr>
+                <tr>
+                    <td>Update Payment Amount: <br>(Check with bank, automatic if increase)</td>
+                    <input type="hidden" name="updatePMT" value="0">
+                    <td><input type="checkbox" name="updatePMT" class="form-check-input" value="1"></td>
                 </tr>
             </table>
             <br>

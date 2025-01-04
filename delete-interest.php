@@ -57,14 +57,23 @@
             $row = $result->fetch_assoc();
             $date = htmlspecialchars($row['date_interest']);
             $interest = htmlspecialchars($row['new_val_interest']);
+            $updatePMT = htmlspecialchars($row['update_PMT']);
             $stmtLoanDetails->close();
+
+            if($updatePMT == 1){
+                $updatePMTinput = '<input type="hidden" name="updatePMT" value="0">
+                        <td><input type="checkbox" name="updatePMT" class="form-check-input" value="1" checked disabled></td>';
+            }else{
+                $updatePMTinput = '<input type="hidden" name="updatePMT" value="0">
+                        <td><input type="checkbox" name="updatePMT" class="form-check-input" value="1" disabled></td>';
+            }
 
             if (isset($_POST['submit'])) {
                 $submit = $_POST['submit'];
 
                 if ($submit == "Cancel") {
                     $db->close();
-                    header('Location: loans.php');
+                    header('Location: header("Location: loan-elements.php?DB_set=$DbID");');
                     exit();
                 }
 
@@ -99,6 +108,10 @@
                     <tr>
                         <td>New Interest Amount:</td>
                         <td>$interest%</td>
+                    </tr>
+                    <tr>
+                        <td>Update Payment Amount:</td>
+                        $updatePMTinput
                     </tr>
                 </table>
                 <br>
