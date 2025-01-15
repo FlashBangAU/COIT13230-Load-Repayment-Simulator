@@ -9,10 +9,40 @@
     <link rel="stylesheet" href="css/custom.css">
     <script src="js/bootstrap.min.js"></script>
     <title>List of Loans</title>
-    <style>
-        table {border-style: outset; border-width: thin;}
-        th, td {border-style: inset; border-width: thin;}
+    <style type="text/css">
+        /* Custom Styles for Loan Table */
+        table {
+            border-style: outset !important;
+            border-width: thin !important;
+            border-collapse: collapse !important; /* Ensures proper table border behavior */
+            width: 100%;
+        }
+
+        table th, table td {
+            border-style: inset !important;
+            border-width: thin !important;
+            padding: 5px !important;
+            text-align: left;
+        }
+
+        /* Background color for table headers */
+        table th {
+            background-color: #f2f2f2 !important;
+        }
+
+        /* Body Styles */
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Footer Styling */
+        footer {
+            margin-top: auto;
+        }
     </style>
+
 </head>
 <body>    
     <?php

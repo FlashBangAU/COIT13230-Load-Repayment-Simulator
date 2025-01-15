@@ -1,29 +1,11 @@
-.flat-list li {
-	display: inline
-}
-.navbar {
-	background-color: #eeeeee !important;
-}
-.nav-item {
-	font-weight: bolder;
-}
-.class="card"{
-	background-color: #eeeeee;
-}
-div-1 {
-	background-color: #eeeeee;
-	border-radius: 10px;
-}
-img, iframe {
-	border-radius: 10px;
-}
-
+/* Body Styles */
 body {
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
+/* Footer Styling */
 footer {
-	margin-top: auto;
+    margin-top: auto;
 }

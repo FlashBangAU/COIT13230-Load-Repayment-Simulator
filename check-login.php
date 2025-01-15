@@ -1,4 +1,13 @@
+<script src="js/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <script src="js/bootstrap.min.js"></script>
+
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start(); // Start the session only if it's not already active
+}
+
 if (isset($_POST['email']) && isset($_POST['password'])) {
     if (empty($_POST['email'])) {
         echo "Email not supplied.";
@@ -33,7 +42,8 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     $stmt->close();
 
     if (!$result || $result->num_rows === 0) {
-        echo "Invalid email or password.";
+        echo "<p class='text-danger'>Invalid email or password.</p>";
+        header("Refresh: 2.5; url=login.php");
         $db->close();
         exit;
     }
@@ -42,12 +52,17 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 
     // Verify the password
     if (password_verify($password, $user['password'])) {
-        // Start session and set session variables
-        $_SESSION['valid-user'] = $email;
+        // Set session variables for the logged-in user
+        $_SESSION['valid-user'] = true; // Set to a boolean value to indicate login
         $_SESSION['username'] = $user['username'];
         $_SESSION['id-user'] = $user['user_ID'];
+
+        // Redirect to home.php after successful login
+        header('Location: home.php');
+        exit();
     } else {
-        echo "Invalid email or password.";
+        echo "<p class='text-danger'>Login failed. Reloading Login.</p>";
+        header("Refresh: 2.5; url=login.php");
     }
 
     $db->close();

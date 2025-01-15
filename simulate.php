@@ -356,7 +356,7 @@
                     console.log("Additional repayment made: $" + payment[pmc][3]);
 
                     //calculates new PMT
-                    if(payment[icc][4] == 1){                    
+                    if(payment[pmc].length > 4 && payment[pmc][4] == 1){
                         PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
                         console.log("PMT set to: " + PMT);
                     }

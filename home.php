@@ -14,11 +14,16 @@
 	<h1>Loan Repayment Simulator | Home</h1>
 	<?php
 		session_start();
+
+		//echo '<pre>';
+		//print_r($_SESSION); // Debugging line to show session contents
+		//echo '</pre>';
+
 		$validSession = require('check-session.php');
 
 		$validLogin = require("check-login.php");
 
-		if($validLogin || $validSession){
+		if($validLogin && $validSession){
 			$name = $_SESSION['username'];
 
 			echo "Welcome, $name.<br><br>";

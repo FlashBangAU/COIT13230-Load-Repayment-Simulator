@@ -17,17 +17,14 @@
 
 		$validSession = require('check-session.php');
 
-		if ($validSession){
-			$oldUser = $_SESSION['valid-user'];
-			unset($_SESSION['valid-user']);
-			session_destroy();
-		}
-
-		if (!empty($oldUser)) {
-			echo 'Logged Out<br>';
+		if (isset($_SESSION['valid-user'])) {
+		    session_unset();
+		    session_destroy();
+		    echo 'Logged Out<br>';
 		}else{
 			echo 'You were not logged in, and so have no been logged out.<br>';
 		}
+		
 		include('footer-logged-out.php');
 	?>
 </body>
