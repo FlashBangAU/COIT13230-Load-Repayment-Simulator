@@ -73,7 +73,7 @@
 
                 if ($submit == "Cancel") {
                     $db->close();
-                    header('Location: header("Location: loan-elements.php?DB_set=$DbID");');
+                    header("Location: loan-elements.php?DB_set=$DbID");
                     exit();
                 }
 

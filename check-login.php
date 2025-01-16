@@ -9,12 +9,9 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (isset($_POST['email']) && isset($_POST['password'])) {
-    if (empty($_POST['email'])) {
-        echo "Email not supplied.";
-        return false;
-    }
-    if (empty($_POST['password'])) {
-        echo "Password not supplied.";
+    if (empty($_POST['email']) || empty($_POST['password'])) {
+        echo "<p class='text-danger'>Email and/or Password not supplied. Reloading Login...</p>";
+        header("Refresh: 3; url=login.php");
         return false;
     }
 
@@ -42,7 +39,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     $stmt->close();
 
     if (!$result || $result->num_rows === 0) {
-        echo "<p class='text-danger'>Invalid email or password.</p>";
+        echo "<p class='text-danger'>Invalid email or password. Reloading Login...</p>";
         header("Refresh: 2.5; url=login.php");
         $db->close();
         exit;
@@ -61,7 +58,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         header('Location: home.php');
         exit();
     } else {
-        echo "<p class='text-danger'>Login failed. Reloading Login.</p>";
+        echo "<p class='text-danger'>Login failed. Reloading Login...</p>";
         header("Refresh: 2.5; url=login.php");
     }
 

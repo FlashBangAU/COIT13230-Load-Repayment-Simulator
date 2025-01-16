@@ -23,6 +23,7 @@
 		    echo 'Logged Out<br>';
 		}else{
 			echo 'You were not logged in, and so have no been logged out.<br>';
+			echo '<p><a href="login.php" class="btn btn-primary">Login</a></p>';
 		}
 		
 		include('footer-logged-out.php');

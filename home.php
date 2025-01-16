@@ -38,6 +38,7 @@
 
 			echo "<h2>Your Options</h2>";
 			echo "<p>You must log in to manage home loan.</p>";
+			echo '<p><a href="login.php" class="btn btn-primary">Login</a></p>';
 
 			include("footer-logged-out.php");
 		}
