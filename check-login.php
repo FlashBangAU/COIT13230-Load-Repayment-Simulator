@@ -27,7 +27,8 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     $stmt = $db->prepare($query);
 
     if (!$stmt) {
-        echo "Failed to prepare the statement: " . $db->error;
+        echo "<p class='text-danger'>Failed to prepare Database Statement. Reloading Login...</p>" . $db->error;;
+        header("Refresh: 5; url=login.php");
         $db->close();
         exit;
     }
