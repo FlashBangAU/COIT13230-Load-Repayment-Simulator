@@ -198,6 +198,7 @@
                     </div>
                 </aside>
         END;
+                
                 require('footer-logged-in.php');
             echo "</div>";
         echo "</body>";
@@ -280,6 +281,9 @@
             yearsGraph[count] = Number(currYear) + count;
         }
 
+//set array info to display payment changes in loan
+        const variableChangeArray = [];
+        var variableChangeCount = 0;
 
         var currPrinciple = startPrinciple;
 
@@ -338,14 +342,31 @@
                     currInterest = interest[icc][3] / 100 / 365;
                     console.log("Changed interest to " + interest[icc][3] +  "%.");
 
+                    variableChangeArray[variableChangeCount] = 
+                        ["New Interest Rate",                           //Title
+                        currYear + "-" + currMonth + "-" + currDay,     //current date
+                        interest[icc][3] + "%",                         //new interest
+                        "NO",                                           //Statement if PMT recalculated
+                        PMT                                             //PMT   
+                    ];                                          
+
                     //calculates new PMT
                     currInterestPaymentsAnnual = newAnnualInterest(startIntervalStr, interest[icc][3]/100);
                     if(interest[icc][4] == 1 || lastInterest < currInterest){                    
                         PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
                         console.log("PMT set to: " + PMT);
+
+                        variableChangeArray[variableChangeCount] = 
+                            ["New Interest Rate",                           //Title
+                            currYear + "-" + currMonth + "-" + currDay,     //current date
+                            interest[icc][3] + "%",                         //new interest
+                            "YES",                                          //Statement if PMT recalculated
+                            PMT                                             //new PMT   
+                        ]; 
                     }   
 
                     icc++;
+                    variableChangeCount++;
                 }
             }
 
@@ -355,14 +376,31 @@
                     currPrinciple -= payment[pmc][3];
                     console.log("Additional repayment made: $" + payment[pmc][3]);
 
+                    variableChangeArray[variableChangeCount] = 
+                        ["Additional Repayment",                        //Title
+                        currYear + "-" + currMonth + "-" + currDay,     //current date
+                        "$" + payment[pmc][3],                         //new interest
+                        "NO",                                           //Statement if PMT recalculated
+                        PMT                                             //PMT   
+                    ];
+
                     //calculates new PMT
                     if(payment[pmc].length > 4 && payment[pmc][4] == 1){
                         PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
                         console.log("PMT set to: " + PMT);
+
+                        variableChangeArray[variableChangeCount] = 
+                            ["Additional Repayment",                        //Title
+                            currYear + "-" + currMonth + "-" + currDay,     //current date
+                            "$" + payment[pmc][3],                         //new interest
+                            "YES",                                           //Statement if PMT recalculated
+                            PMT                                             //PMT   
+                        ];
                     }
                     totalPaidGraph += payment[pmc][3];
 
-                    pmc++; 
+                    pmc++;
+                    variableChangeCount++; 
                 }
             }
 
@@ -436,6 +474,8 @@
             console.log("Principle Graph: " + principleGraph);
             console.log("Total Paid Graph: " + totalGraph);
             console.log("Principle and Interest Graph: " + principleInterestGraph);
+
+            console.log(variableChangeArray);
         }
 
 
@@ -513,6 +553,8 @@
         document.getElementById("currDate").innerHTML = currYear+"-"+currMonth+"-"+currDay;
         document.getElementById("totalPaid").innerHTML = "$"+(totalInterestCharged+startPrinciple).toFixed(2);
         document.getElementById("interestPaid").innerHTML = "$"+totalInterestCharged.toFixed(2);
+
+        //document.getElementById()
 
 
 
