@@ -43,187 +43,207 @@
         }
     </style>
 </head>
-<body>    
-    <?php
-    session_start();
-    $validSession = require('check-session.php');
-    $validLogin = require("check-login.php");
+<body>  
+    <div class="container d-flex flex-column min-vh-100">  
+        <?php
+        session_start();
+        $validSession = require('check-session.php');
+        $validLogin = require("check-login.php");
 
-    if ($validLogin || $validSession) {
-        echo '<h1>List of Loans</h1>';
+        if ($validLogin || $validSession) {
+            echo '<h1>List of Loans</h1>';
 
-        require("db-connection.php");
+            require("db-connection.php");
 
-        // Validate and get DB_set from GET parameter
-        if (isset($_GET['DB_set']) && is_numeric($_GET['DB_set'])) {
-            $DbID = (int)$_GET['DB_set'];
-        } else {
-            echo "Invalid loan ID.";
+            // Validate and get DB_set from GET parameter
+            if (isset($_GET['DB_set']) && is_numeric($_GET['DB_set'])) {
+                $DbID = (int)$_GET['DB_set'];
+            } else {
+                echo "Invalid loan ID.";
+                $db->close();
+                exit;
+            }
+
+            $search = $_SESSION['id-user'];
+            $query = "SELECT * FROM starting_loan_values WHERE ID_user = ? AND DB_set = ?";
+
+            $stmt = $db->prepare($query);
+            if (!empty($search)) {
+                $stmt->bind_param("ii", $search, $DbID);
+            }
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $stmt->close();
+
+            while ($row = $result->fetch_assoc()) {
+                $id = $row['DB_set'];
+                $startDate = $row['start_date'];
+                $startInterest = $row['start_interest'];
+                $startPrinciple = $row['start_principle'];
+                $durationYears = $row['duration_years'];
+                $paymentInterval = $row['payment_interval'];
+
+                echo "<div class='mb-3 text-center row'><div class='col-md'>";
+                createButtonColumn1("DB_set", $DbID, "Simulate", "simulate.php");
+                        echo "</div><div class='col-md'>
+                            <b>Beginning Interest:</b> $startInterest% &nbsp; 
+                        </div>
+                        <div class='col-md'>
+                            <b>Loan Start Date:</b> $startDate &nbsp; 
+                        </div>
+                        <div class='col-md'>
+                            <b>Beginning Interest:</b> $startInterest% &nbsp; 
+                        </div>
+                        <div class='col-md'>
+                            <b>Principle:</b> $$startPrinciple &nbsp; 
+                        </div>
+                        <div class='col-md'>
+                            <b>Duration:</b> $durationYears years &nbsp; 
+                        </div>
+                        <div class='col-md'>
+                            <b>Interest Added Every:</b> $paymentInterval
+                        </div>
+                    </div>";
+            }
+
+
+            require("db-connection.php");
+
+            $query = "SELECT * FROM interest_repayments WHERE ID_user = ? AND DB_set = ? ORDER BY date_interest";
+
+            $stmt = $db->prepare($query);
+            if (!empty($search)) {
+                $stmt->bind_param("ii", $search, $DbID);
+            }
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $stmt->close();
+
+            $numResults = $result->num_rows;
+
+            createButtonColumn1("DB_set", $DbID, "Add Interest", "add-interest.php");
+            echo <<<END
+            <table>
+            <thead>
+                <tr>
+                    <th>Interest Change Date</th>
+                    <th>Interest Change Amount</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+    END;
+            while ($row = $result->fetch_assoc()) {
+                $id = $row['DB_set'];
+                $interestID = $row['interest_ID'];
+                $interestDate = $row['date_interest'];
+                $interestAmount = $row['new_val_interest'];
+
+                echo "<tr>";
+                echo "<td valign=\"top\">$interestDate</td>";
+                echo "<td valign=\"top\">$interestAmount%</td>";
+                createButtonColumn2("DB_set", $DbID, "interest_ID", $interestID, "Edit", "edit-interest.php");
+                createButtonColumn3("DB_set", $DbID, "interest_ID", $interestID, "Delete", "delete-interest.php");
+                echo "</tr>";
+            }
+
+            $result->free();
             $db->close();
-            exit;
+
+            echo '</tbody>';
+            echo '</table>';
+
+
+
+            require("db-connection.php");
+
+            $query = "SELECT * FROM additional_payments WHERE ID_user = ? AND DB_set = ? ORDER BY date_additional_payment";
+
+            $stmt = $db->prepare($query);
+            if (!empty($search)) {
+                $stmt->bind_param("ii", $search, $DbID);
+            }
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $stmt->close();
+
+            $numResults = $result->num_rows;
+
+            echo "<br>";
+            createButtonColumn1("DB_set", $DbID, "Add Payment", "add-payment.php");
+            echo <<<END
+            <table>
+            <thead>
+                <tr>
+                    <th>Additional Payment Date</th>
+                    <th>Payment Amount</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+    END;
+            while ($row = $result->fetch_assoc()) {
+                $id = $row['DB_set'];
+                $paymentID = $row['payment_ID'];
+                $paymentDate = $row['date_additional_payment'];
+                $paymentAmount = $row['amount_additional_payments'];
+
+                echo "<tr>";
+                echo "<td valign=\"top\">$paymentDate</td>";
+                echo "<td valign=\"top\">$$paymentAmount</td>";
+                createButtonColumn2("DB_set", $DbID, "payment_ID", $paymentID, "Edit", "edit-payment.php");
+                createButtonColumn3("DB_set", $DbID, "payment_ID", $paymentID, "Delete", "delete-payment.php");
+                echo "</tr>";
+            }
+
+            $result->free();
+            $db->close();
+
+            echo '</tbody>';
+            echo '</table>';
+
+
+
+            require('footer-logged-in.php');
+        } else {
+            if (isset($_SESSION['valid_user'])) {
+                echo "Could not log you in.<br>";
+            }
+            require('login.php');
         }
 
-        $search = $_SESSION['id-user'];
-        $query = "SELECT * FROM starting_loan_values WHERE ID_user = ? AND DB_set = ?";
-
-        $stmt = $db->prepare($query);
-        if (!empty($search)) {
-            $stmt->bind_param("ii", $search, $DbID);
+        //simulate, add interest/payment button
+        function createButtonColumn1($hiddenName, $hiddenValue, $buttonText, $actionPage) {
+            echo "<td>";
+            echo "<form action=\"$actionPage\" method=\"GET\">";
+            echo "<input type=\"hidden\" name=\"$hiddenName\" value=\"$hiddenValue\">";
+            echo "<button type=\"submit\" class=\"btn btn-primary\">$buttonText</button>";
+            echo "</form>";            
+            echo "</td>";
         }
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $stmt->close();
-
-        while ($row = $result->fetch_assoc()) {
-            $id = $row['DB_set'];
-            $startDate = $row['start_date'];
-            $startInterest = $row['start_interest'];
-            $startPrinciple = $row['start_principle'];
-            $durationYears = $row['duration_years'];
-            $paymentInterval = $row['payment_interval'];
-
-            createButtonColumn1("DB_set", $DbID, "Simulate", "simulate.php");
-            echo "<b>Loan Start Date:</b> $startDate    <b>Beginning Interest:</b> $startInterest%    <b>Principle:</b> $$startPrinciple <b>Duration:</b> $durationYears years <b>Interest Added Every:</b> $paymentInterval <br>";
+        //edit button
+        function createButtonColumn2($hiddenName1, $hiddenValue1, $hiddenName2, $hiddenValue2, $buttonText, $actionPage) {
+            echo "<td>";
+            echo "<form action=\"$actionPage\" method=\"GET\">";
+            echo "<input type=\"hidden\" name=\"$hiddenName1\" value=\"$hiddenValue1\">";
+            echo "<input type=\"hidden\" name=\"$hiddenName2\" value=\"$hiddenValue2\">";
+            echo "<button type=\"submit\" class=\"btn btn-warning\">$buttonText</button>";
+            echo "</form>";            
+            echo "</td>";
         }
-
-
-        require("db-connection.php");
-
-        $query = "SELECT * FROM interest_repayments WHERE ID_user = ? AND DB_set = ? ORDER BY date_interest";
-
-        $stmt = $db->prepare($query);
-        if (!empty($search)) {
-            $stmt->bind_param("ii", $search, $DbID);
+        //delete button
+        function createButtonColumn3($hiddenName1, $hiddenValue1, $hiddenName2, $hiddenValue2, $buttonText, $actionPage) {
+            echo "<td>";
+            echo "<form action=\"$actionPage\" method=\"GET\">";
+            echo "<input type=\"hidden\" name=\"$hiddenName1\" value=\"$hiddenValue1\">";
+            echo "<input type=\"hidden\" name=\"$hiddenName2\" value=\"$hiddenValue2\">";
+            echo "<button type=\"submit\" class=\"btn btn-danger\">$buttonText</button>";
+            echo "</form>";            
+            echo "</td>";
         }
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $stmt->close();
-
-        $numResults = $result->num_rows;
-
-        echo "<br>";
-        createButtonColumn1("DB_set", $DbID, "Add Interest", "add-interest.php");
-        echo <<<END
-        <table>
-        <thead>
-            <tr>
-                <th>Interest Change Date</th>
-                <th>Interest Change Amount</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-END;
-        while ($row = $result->fetch_assoc()) {
-            $id = $row['DB_set'];
-            $interestID = $row['interest_ID'];
-            $interestDate = $row['date_interest'];
-            $interestAmount = $row['new_val_interest'];
-
-            echo "<tr>";
-            echo "<td valign=\"top\">$interestDate</td>";
-            echo "<td valign=\"top\">$interestAmount%</td>";
-            createButtonColumn2("DB_set", $DbID, "interest_ID", $interestID, "Edit", "edit-interest.php");
-            createButtonColumn3("DB_set", $DbID, "interest_ID", $interestID, "Delete", "delete-interest.php");
-            echo "</tr>";
-        }
-
-        $result->free();
-        $db->close();
-
-        echo '</tbody>';
-        echo '</table>';
-
-
-
-        require("db-connection.php");
-
-        $query = "SELECT * FROM additional_payments WHERE ID_user = ? AND DB_set = ? ORDER BY date_additional_payment";
-
-        $stmt = $db->prepare($query);
-        if (!empty($search)) {
-            $stmt->bind_param("ii", $search, $DbID);
-        }
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $stmt->close();
-
-        $numResults = $result->num_rows;
-
-        echo "<br>";
-        createButtonColumn1("DB_set", $DbID, "Add Payment", "add-payment.php");
-        echo <<<END
-        <table>
-        <thead>
-            <tr>
-                <th>Additional Payment Date</th>
-                <th>Payment Amount</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-END;
-        while ($row = $result->fetch_assoc()) {
-            $id = $row['DB_set'];
-            $paymentID = $row['payment_ID'];
-            $paymentDate = $row['date_additional_payment'];
-            $paymentAmount = $row['amount_additional_payments'];
-
-            echo "<tr>";
-            echo "<td valign=\"top\">$paymentDate</td>";
-            echo "<td valign=\"top\">$$paymentAmount</td>";
-            createButtonColumn2("DB_set", $DbID, "payment_ID", $paymentID, "Edit", "edit-payment.php");
-            createButtonColumn3("DB_set", $DbID, "payment_ID", $paymentID, "Delete", "delete-payment.php");
-            echo "</tr>";
-        }
-
-        $result->free();
-        $db->close();
-
-        echo '</tbody>';
-        echo '</table>';
-
-
-
-        require('footer-logged-in.php');
-    } else {
-        if (isset($_SESSION['valid_user'])) {
-            echo "Could not log you in.<br>";
-        }
-        require('login.php');
-    }
-
-    //simulate, add interest/payment button
-    function createButtonColumn1($hiddenName, $hiddenValue, $buttonText, $actionPage) {
-        echo "<td>";
-        echo "<form action=\"$actionPage\" method=\"GET\">";
-        echo "<input type=\"hidden\" name=\"$hiddenName\" value=\"$hiddenValue\">";
-        echo "<button type=\"submit\" class=\"btn btn-primary\">$buttonText</button>";
-        echo "</form>";            
-        echo "</td>";
-    }
-    //edit button
-    function createButtonColumn2($hiddenName1, $hiddenValue1, $hiddenName2, $hiddenValue2, $buttonText, $actionPage) {
-        echo "<td>";
-        echo "<form action=\"$actionPage\" method=\"GET\">";
-        echo "<input type=\"hidden\" name=\"$hiddenName1\" value=\"$hiddenValue1\">";
-        echo "<input type=\"hidden\" name=\"$hiddenName2\" value=\"$hiddenValue2\">";
-        echo "<button type=\"submit\" class=\"btn btn-warning\">$buttonText</button>";
-        echo "</form>";            
-        echo "</td>";
-    }
-    //delete button
-    function createButtonColumn3($hiddenName1, $hiddenValue1, $hiddenName2, $hiddenValue2, $buttonText, $actionPage) {
-        echo "<td>";
-        echo "<form action=\"$actionPage\" method=\"GET\">";
-        echo "<input type=\"hidden\" name=\"$hiddenName1\" value=\"$hiddenValue1\">";
-        echo "<input type=\"hidden\" name=\"$hiddenName2\" value=\"$hiddenValue2\">";
-        echo "<button type=\"submit\" class=\"btn btn-danger\">$buttonText</button>";
-        echo "</form>";            
-        echo "</td>";
-    }
-    ?>
+        ?>
+    </div>
 </body>
 </html>
