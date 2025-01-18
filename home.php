@@ -11,37 +11,47 @@
 	<title>Home</title>
 </head>
 <body>
-	<h1>Loan Repayment Simulator | Home</h1>
-	<?php
-		session_start();
+	<div class="container d-flex flex-column min-vh-100">
+		<h1 class="my-4">Home Loan Simulator | Home</h1>
+		<?php
+			session_start();
 
-		//echo '<pre>';
-		//print_r($_SESSION); // Debugging line to show session contents
-		//echo '</pre>';
+			//echo '<pre>';
+			//print_r($_SESSION); // Debugging line to show session contents
+			//echo '</pre>';
 
-		$validSession = require('check-session.php');
+			$validSession = require('check-session.php');
 
-		$validLogin = require("check-login.php");
+			$validLogin = require("check-login.php");
 
-		if($validLogin && $validSession){
-			$name = $_SESSION['username'];
+			if($validLogin && $validSession){
+				$name = $_SESSION['username'];
 
-			echo "Welcome, $name.<br><br>";
+				echo "Welcome, $name.<br><br>";
 
-			echo "<h2>Your Options</h2>";
-			echo '<p><a href="loans.php" class="btn btn-primary">View all home loans</a><br>';
-			echo '<a href="add-loan.php" class="btn btn-primary">Add a loan</a></p>';
+				echo "<h2>Your Options</h2>";
+				echo '<p><a href="loans.php" class="btn btn-primary">View all home loans</a><br>';
+				echo '<a href="add-loan.php" class="btn btn-primary">Add a loan</a></p>';
+				echo <<<END
+					<p>
+					This web application is a prototype created by Hughen Flint as a final university project.<br>
+					The goal of this is to create an accurate home loan simulation where the user is able to predict, track, discover and experiment with loan repayments.<br><br>
+					<b>Features Include:</b> Hold multiple Loans, Ability to make additional repayments, Ability to adjust interest rates, Change required payment amounts, Display graph results, Show new payments when variables change the loan.<br><br>
+					Instructions on use and function of this application will be found here on next version.
+					</p>
+				END;
 
-			include("footer-logged-in.php");
-		}else{
-			echo "You are not logged in.<br>";
+				include("footer-logged-in.php");
+			}else{
+				echo "You are not logged in.<br>";
 
-			echo "<h2>Your Options</h2>";
-			echo "<p>You must log in to manage home loan.</p>";
-			echo '<p><a href="login.php" class="btn btn-primary">Login</a></p>';
+				echo "<h2>Your Options</h2>";
+				echo "<p>You must log in to manage home loan.</p>";
+				echo '<p><a href="login.php" class="btn btn-primary">Login</a></p>';
 
-			include("footer-logged-out.php");
-		}
-	?>
+				include("footer-logged-out.php");
+			}
+		?>
+	</div>
 </body>
 </html>

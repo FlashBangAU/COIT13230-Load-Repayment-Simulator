@@ -11,22 +11,25 @@
 	<title>Logged Out</title>
 </head>
 <body>
-	<h1>Loan Repayment Simulator</h1>
-	<?php
-		session_start();
+	<div class="container d-flex flex-column min-vh-100">
+		<h1 class="my-4">Loan Repayment Simulator</h1>
+		<?php
+			session_start();
 
-		$validSession = require('check-session.php');
+			$validSession = require('check-session.php');
 
-		if (isset($_SESSION['valid-user'])) {
-		    session_unset();
-		    session_destroy();
-		    echo 'Logged Out<br>';
-		}else{
-			echo 'You were not logged in, and so have no been logged out.<br>';
-			echo '<p><a href="login.php" class="btn btn-primary">Login</a></p>';
-		}
-		
-		include('footer-logged-out.php');
-	?>
+			if (isset($_SESSION['valid-user'])) {
+			    session_unset();
+			    session_destroy();
+			    echo 'Logged Out.<br>';
+			    echo '<p><a href="login.php" class="btn btn-primary">Login</a></p>';
+			}else{
+				echo 'You were not logged in, and so have not been logged out.<br>';
+				echo '<p><a href="login.php" class="btn btn-primary">Login</a></p>';
+			}
+			
+			include('footer-logged-out.php');
+		?>
+	</div>
 </body>
 </html>

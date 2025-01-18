@@ -10,37 +10,8 @@
     <script src="js/bootstrap.min.js"></script>
     <title>List of Loans</title>
     <style type="text/css">
-        /* Custom Styles for Loan Table */
-        table {
-            border-style: outset !important;
-            border-width: thin !important;
-            border-collapse: collapse !important; /* Ensures proper table border behavior */
-            width: 100%;
-        }
-
-        table th, table td {
-            border-style: inset !important;
-            border-width: thin !important;
-            padding: 5px !important;
-            text-align: left;
-        }
-
-        /* Background color for table headers */
-        table th {
-            background-color: #f2f2f2 !important;
-        }
-
-        /* Body Styles */
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Footer Styling */
-        footer {
-            margin-top: auto;
-        }
+        table {border-style: outset; border-width: thin;}
+        th, td {border-style: inset; border-width: thin;}
     </style>
 
 </head>
@@ -52,7 +23,7 @@
         $validLogin = require("check-login.php");
 
         if ($validLogin || $validSession) {
-            echo '<h1>List of Loans</h1>';
+            echo '<h1 class="text-center my-4">List of Loans</h1>';
             require("db-connection.php");
 
             $search = $_SESSION['id-user'];
@@ -69,8 +40,7 @@
             $numResults = $result->num_rows;
 
             echo <<<END
-            <br>
-            <table>
+            <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>Loan ID</th>

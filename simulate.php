@@ -74,7 +74,6 @@
 
         $numResults = $result->num_rows;
 
-        echo "<br>";
 
         $interestArray = [];
         while ($row = $result->fetch_assoc()) {
@@ -132,46 +131,25 @@
         echo <<<END
         <body>
             <div class="container d-flex flex-column min-vh-100">
-                <h1 class="text-center my-4">List of Loans</h1>
-                <div class="mb-3 text-center row">
-                    <div class="col-lg">
-                        <b>Loan Start Date:</b> $startDate &nbsp; 
-                    </div>
-                    <div class="col-lg">
-                        <b>Beginning Interest:</b> $startInterest% &nbsp; 
-                    </div>
-                    <div class="col-lg">
-                        <b>Principle:</b> $$startPrinciple &nbsp; 
-                    </div>
-                    <div class="col-lg">
-                        <b>Duration:</b> $durationYears years &nbsp; 
-                    </div>
-                    <div class="col-lg">
-                        <b>Interest Added Every:</b> $paymentInterval
-                    </div>
-                </div>
-                <h3 class="mt-3">Loan Simulation Results</h3>
+                <h1 class="text-center my-4">Loan Simulation Results</h1>
                 <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered table-striped-columns">
                         <tbody>
                             <tr>
                                 <td><b>Start Date:</b></td>
                                 <td>$startDate</td>
-                                <td></td>
                                 <td><b>Finish Date:</b></td>
                                 <td><div id="currDate"></div></td>
                             </tr>
                             <tr>
                                 <td><b>Start Principle:</b></td>
                                 <td>$$startPrinciple</td>
-                                <td></td>
                                 <td><b>Total Paid:</b></td>
                                 <td><div id="totalPaid"></div></td>
                             </tr>
                             <tr>
                                 <td><b>Start Interest:</b></td>
                                 <td>$startInterest%</td>
-                                <td></td>
                                 <td><b>Interest Paid:</b></td>
                                 <td><div id="interestPaid"></div></td>
                             </tr>
@@ -179,11 +157,11 @@
                                 <td><b>Duration:</b></td>
                                 <td>$durationYears years</td>
                                 <td></td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td><b>Payment Interval:</b></td>
                                 <td>$paymentInterval</td>
-                                <td></td>
                                 <td></td>
                                 <td><a href="loan-elements.php?DB_set=$DbID" class="btn btn-warning" style="float: right">Back to Changing Variables</a></td>
                             </tr>
@@ -483,7 +461,7 @@
             console.log("Principle and Interest Graph: " + principleInterestGraph);
         }
 
-        var variableChangeTable = "<br><table class='table table-bordered'><tbody><tr><th>Reason</th><th>Date</th><th>Amount</th><th>Payment Recalculated</th><th>Payment Per Interval</th></tr>";
+        var variableChangeTable = "<br><table class='table table-bordered table-striped'><tbody><thead class='table-'><tr><th>Reason</th><th>Date</th><th>Amount</th><th>Payment Recalculated</th><th>Payment Per Interval</th></tr></thead>";
         console.log(variableChangeArray)
         var i = 0;
         while(i < variableChangeArray.length){
