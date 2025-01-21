@@ -70,7 +70,7 @@
                             <b>Duration:</b> $durationYears years &nbsp; 
                         </div>
                         <div class='col-md'>
-                            <b>Interest Added Every:</b> $paymentInterval
+                            <b>Interest Added:</b> $paymentInterval
                         </div>
                     </div>";
             }
