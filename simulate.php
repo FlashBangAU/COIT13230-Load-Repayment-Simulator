@@ -310,7 +310,7 @@
             currYear + "-" + currMonth + "-" + currDay,     //current date
             (startInterest * 100) + "%",                    //new interest
             "Starting Payment",                             //Statement if PMT recalculated
-            "$" + PMT.toFixed(2)                            //PMT   
+            "<td>$" + PMT.toFixed(2)                            //PMT   
         ]; 
         var variableChangeCount = 1;
 
@@ -332,7 +332,7 @@
                         currYear + "-" + currMonth + "-" + currDay,     //current date
                         interest[icc][3] + "%",                         //new interest
                         "NO",                                           //Statement if PMT recalculated
-                        "No Change"                                     //PMT   
+                        "<td>$" + PMT.toFixed(2)                         //PMT   
                     ];                                          
 
                     //calculates new PMT
@@ -346,7 +346,7 @@
                             currYear + "-" + currMonth + "-" + currDay,     //current date
                             interest[icc][3] + "%",                         //new interest
                             "YES",                                          //Statement if PMT recalculated
-                            "$" + PMT.toFixed(2)                            //new PMT   
+                            "<td style='background-color:#a1c5ff'>$" + PMT.toFixed(2)                            //new PMT   
                         ]; 
                     }   
 
@@ -366,7 +366,7 @@
                         currYear + "-" + currMonth + "-" + currDay,     //current date
                         "$" + payment[pmc][3],                          //new interest
                         "NO",                                           //Statement if PMT recalculated
-                        "No Change"                                     //PMT   
+                        "<td>$" + PMT.toFixed(2)                         //PMT   
                     ];
 
                     //calculates new PMT
@@ -379,7 +379,7 @@
                             currYear + "-" + currMonth + "-" + currDay,     //current date
                             "$" + payment[pmc][3],                          //new interest
                             "YES",                                          //Statement if PMT recalculated
-                            "$" + PMT.toFixed(2)                            //PMT   
+                            "<td style='background-color:#a1c5ff'>$" + PMT.toFixed(2)                            //PMT   
                         ];
                     }
                     totalPaidGraph += payment[pmc][3];
@@ -469,7 +469,7 @@
             variableChangeTable += "<td>"+ variableChangeArray[i][1] +"</td>";
             variableChangeTable += "<td>"+ variableChangeArray[i][2] +"</td>";
             variableChangeTable += "<td>"+ variableChangeArray[i][3] +"</td>";
-            variableChangeTable += "<td>"+ variableChangeArray[i][4] +"</td></tr>";
+            variableChangeTable += variableChangeArray[i][4] +"</td></tr>";
             i++;
         }
         variableChangeTable += "</tbody></table>"
@@ -550,11 +550,8 @@
         document.getElementById("totalPaid").innerHTML = "$"+(totalInterestCharged+startPrinciple).toFixed(2);
         document.getElementById("interestPaid").innerHTML = "$"+totalInterestCharged.toFixed(2);
 
-        if(variableChangeArray.length != 0){
-            document.getElementById("variableTable").innerHTML = variableChangeTable;
-        }else{
-            document.getElementById("variableTable").innerHTML = "";
-        }
+        document.getElementById("variableTable").innerHTML = variableChangeTable;
+        
     </script>
 
     <!--graph-->
