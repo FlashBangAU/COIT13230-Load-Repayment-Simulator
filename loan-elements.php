@@ -56,17 +56,15 @@
 
                 echo "<div class='mb-3 text-center row'><div class='col-md'>";
                 createButtonColumn1("DB_set", $DbID, "Simulate", "simulate.php");
-                        echo "</div><div class='col-md'>
-                            <b>Beginning Interest:</b> $startInterest% &nbsp; 
-                        </div>
+                        echo "</div>
                         <div class='col-md'>
                             <b>Loan Start Date:</b> $startDate &nbsp; 
                         </div>
                         <div class='col-md'>
-                            <b>Beginning Interest:</b> $startInterest% &nbsp; 
+                            <b>Principle:</b> $$startPrinciple &nbsp; 
                         </div>
                         <div class='col-md'>
-                            <b>Principle:</b> $$startPrinciple &nbsp; 
+                            <b>Beginning Interest:</b> $startInterest% &nbsp; 
                         </div>
                         <div class='col-md'>
                             <b>Duration:</b> $durationYears years &nbsp; 
