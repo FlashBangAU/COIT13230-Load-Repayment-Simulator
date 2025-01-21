@@ -332,7 +332,7 @@
                         currYear + "-" + currMonth + "-" + currDay,     //current date
                         interest[icc][3] + "%",                         //new interest
                         "NO",                                           //Statement if PMT recalculated
-                        "$" + PMT.toFixed(2)                            //PMT   
+                        "No Change"                                     //PMT   
                     ];                                          
 
                     //calculates new PMT
@@ -366,7 +366,7 @@
                         currYear + "-" + currMonth + "-" + currDay,     //current date
                         "$" + payment[pmc][3],                          //new interest
                         "NO",                                           //Statement if PMT recalculated
-                        "$" + PMT.toFixed(2)                            //PMT   
+                        "No Change"                                     //PMT   
                     ];
 
                     //calculates new PMT
