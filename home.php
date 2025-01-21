@@ -30,8 +30,8 @@
 				echo "Welcome, $name.<br><br>";
 
 				echo "<h2>Your Options</h2>";
-				echo '<p><a href="loans.php" class="btn btn-primary">View all home loans</a><br>';
-				echo '<a href="add-loan.php" class="btn btn-primary">Add a loan</a></p>';
+				echo '<p><a href="loans.php" class="btn btn-primary">View all home loans</a>	';
+				echo '<a href="add-loan.php" class="btn btn-warning">Add a loan</a></p>';
 				echo <<<END
 					<p>
 					This web application is a prototype created by Hughen Flint as a final university project.<br>
@@ -48,6 +48,14 @@
 				echo "<h2>Your Options</h2>";
 				echo "<p>You must log in to manage home loan.</p>";
 				echo '<p><a href="login.php" class="btn btn-primary">Login</a></p>';
+				echo <<<END
+					<p>
+					This web application is a prototype created by Hughen Flint as a final university project.<br>
+					The goal of this is to create an accurate home loan simulation where the user is able to predict, track, discover and experiment with loan repayments.<br><br>
+					<b>Features Include:</b> Hold multiple Loans, Ability to make additional repayments, Ability to adjust interest rates, Change required payment amounts, Display graph results, Show new payments when variables change the loan.<br><br>
+					Instructions on use and function of this application will be found here on next version.
+					</p>
+				END;
 
 				include("footer-logged-out.php");
 			}
