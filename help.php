@@ -51,7 +51,7 @@
 					The loan will run through a loop for each day, calculating the daily interest. It will charge the accumulated interest to remove the payment amount and the remainder from the principal.<br>
 					This is repeated until the loan has ended or exceeded the loan duration (which should never happen unless a payment of a negative amount was taken in the loan).<br>
 					Graph information is taken from this simulation and used to display loan data through the term.<br>
-					Below the graph a table will be shown of changes that happened to the loan and the payments required for each interval.
+					Below the graph a table will be shown of changes that happened to the loan and the payments required for each interval if a payment changes in the far right column it will be indicated as blue.
 				</p>
 
 			END;

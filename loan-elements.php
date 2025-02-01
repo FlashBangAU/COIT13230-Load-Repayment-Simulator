@@ -97,6 +97,7 @@
                 <tr>
                     <th>Interest Change Date</th>
                     <th>Interest Change Amount</th>
+                    <th>Update Payment</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -107,11 +108,17 @@
                 $id = $row['DB_set'];
                 $interestID = $row['interest_ID'];
                 $interestDate = $row['date_interest'];
+                $interestPMT = $row['update_PMT'];
                 $interestAmount = $row['new_val_interest'];
 
                 echo "<tr>";
                 echo "<td valign=\"top\">$interestDate</td>";
                 echo "<td valign=\"top\">$interestAmount%</td>";
+                if($interestPMT == 1){
+                    echo '<td><input type="checkbox" name="updatePMT" class="form-check-input" value="1" checked disabled></td>';
+                }else{
+                    echo '<td><input type="checkbox" name="updatePMT" class="form-check-input" value="1" disabled></td>';
+                }
                 createButtonColumn2("DB_set", $DbID, "interest_ID", $interestID, "Edit", "edit-interest.php");
                 createButtonColumn3("DB_set", $DbID, "interest_ID", $interestID, "Delete", "delete-interest.php");
                 echo "</tr>";
@@ -147,6 +154,7 @@
                 <tr>
                     <th>Additional Payment Date</th>
                     <th>Payment Amount</th>
+                    <th>Update Payment</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -157,11 +165,17 @@
                 $id = $row['DB_set'];
                 $paymentID = $row['payment_ID'];
                 $paymentDate = $row['date_additional_payment'];
+                $paymentPMT = $row['update_PMT'];
                 $paymentAmount = $row['amount_additional_payments'];
 
                 echo "<tr>";
                 echo "<td valign=\"top\">$paymentDate</td>";
                 echo "<td valign=\"top\">$$paymentAmount</td>";
+                if($paymentPMT == 1){
+                    echo '<td><input type="checkbox" name="updatePMT" class="form-check-input" value="1" checked disabled></td>';
+                }else{
+                    echo '<td><input type="checkbox" name="updatePMT" class="form-check-input" value="1" disabled></td>';
+                }
                 createButtonColumn2("DB_set", $DbID, "payment_ID", $paymentID, "Edit", "edit-payment.php");
                 createButtonColumn3("DB_set", $DbID, "payment_ID", $paymentID, "Delete", "delete-payment.php");
                 echo "</tr>";
