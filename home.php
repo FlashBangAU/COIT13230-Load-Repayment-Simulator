@@ -37,7 +37,12 @@
 					This web application is a prototype created by Hughen Flint as a final university project.<br>
 					The goal of this is to create an accurate home loan simulation where the user is able to predict, track, discover and experiment with loan repayments.<br><br>
 					<b>Features Include:</b> Hold multiple Loans, Ability to make additional repayments, Ability to adjust interest rates, Change required payment amounts, Display graph results, Show new payments when variables change the loan.<br><br>
-					Instructions on use and function of this application will be found here on next version.
+					Instructions on use and function of this application will be found <a href="help.php">here</a>.
+					</p>
+
+					<p style="color: red;">
+						This web application is a prototype and does not take any accountability for any financial decisions.<br> 
+						This is a tool designed to aid in financial understanding and will have divations from what is seen in the real world.
 					</p>
 				END;
 
@@ -53,7 +58,7 @@
 					This web application is a prototype created by Hughen Flint as a final university project.<br>
 					The goal of this is to create an accurate home loan simulation where the user is able to predict, track, discover and experiment with loan repayments.<br><br>
 					<b>Features Include:</b> Hold multiple Loans, Ability to make additional repayments, Ability to adjust interest rates, Change required payment amounts, Display graph results, Show new payments when variables change the loan.<br><br>
-					Instructions on use and function of this application will be found here on next version.
+					Instructions on use and function of this application will be found <a href="help.php">here</a>.
 					</p>
 				END;
 
