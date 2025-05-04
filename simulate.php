@@ -168,6 +168,7 @@
                         </tbody>
                     </table>
                 </div>
+                <h4 class="text-center" style="color: red"><div id="endingWarning"></div></h4>
                 <aside class="mt-3">
                     <div class="card chart-container">
                         <div class="card-body">
@@ -439,10 +440,12 @@
         }
 
         console.log("");
+        var warningText = "";
         if (!stuckInLoop){
             console.log("Loan finished normally and paid off principle");
         }else{
             console.log("Got stuck in loop or excided repayments by 2 payments!");
+            warningText = "Exceeded repayments by 2 payments! <br> Or got stuck in loop. (Error in code)";
         }
         console.log("amountOfPayments Remaining: " + amountOfPayments);
         console.log("total amount spent on repayments: " + (totalInterestCharged + startPrinciple + currPrinciple));//currPrinciple to remove negative amount
@@ -452,9 +455,9 @@
         if(yearsCount == principleGraph.length){
             console.log("");
             console.log("Adding last value to graphs");
-            principleGraph[yearsCount] = currPrinciple.toFixed(2);
+            principleGraph[yearsCount] = 0;
             totalGraph[yearsCount] = totalPaidGraph.toFixed(2);
-            principleInterestGraph[yearsCount] = (currPrinciple + interestGraph).toFixed(2);
+            principleInterestGraph[yearsCount] = 0;
 
             console.log("Principle Graph: " + principleGraph);
             console.log("Total Paid Graph: " + totalGraph);
@@ -547,8 +550,9 @@
         }
 
         document.getElementById("currDate").innerHTML = currYear+"-"+currMonth+"-"+currDay;
-        document.getElementById("totalPaid").innerHTML = "$"+(totalInterestCharged+startPrinciple).toFixed(2);
+        document.getElementById("totalPaid").innerHTML = "$"+(totalInterestCharged+startPrinciple+currPrinciple).toFixed(2);
         document.getElementById("interestPaid").innerHTML = "$"+totalInterestCharged.toFixed(2);
+        document.getElementById("endingWarning").innerHTML = warningText;
 
         document.getElementById("variableTable").innerHTML = variableChangeTable;
         
