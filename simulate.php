@@ -139,7 +139,7 @@
                                 <td><b>Start Date:</b></td>
                                 <td>$startDate</td>
                                 <td><b>Finish Date:</b></td>
-                                <td><div id="currDate"></div></td>
+                                <td><div id="finDate"></div></td>
                             </tr>
                             <tr>
                                 <td><b>Start Principle:</b></td>
@@ -165,6 +165,24 @@
                                 <td></td>
                                 <td><a href="loan-elements.php?DB_set=$DbID" class="btn btn-warning" style="float: right">Back to Changing Variables</a></td>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><b>No Pay Finish Date:</b></td>
+                                <td><div id="finDateNoPay"></div></td>
+                                <td><b>No Pay Total Paid:</b></td>
+                                <td><div id="totalPaidNoPay"></div></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td><b>No Pay Interest Paid:</b></td>
+                                <td><div id="interestPaidNoPay"></div></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -177,6 +195,7 @@
                     </div>
                 </aside>
                 <div id="variableTable"></div>
+                <div id="variableTableNoPay"></div>
         END;
                 
                 require('footer-logged-in.php');
@@ -248,9 +267,14 @@
         const principleGraph = [startPrinciple.toFixed(2)];
         const totalGraph = [0];
         const principleInterestGraph = [startPrinciple.toFixed(2)];
+        const principleGraphNoPay = [startPrinciple.toFixed(2)];
+        const totalGraphNoPay = [0];
+        const principleInterestGraphNoPay = [startPrinciple.toFixed(2)];
 
         var totalPaidGraph = 0;
         var interestGraph = 0;
+        var totalPaidGraphNoPay = 0;
+        var interestGraphNoPay = 0;
 
         var countForYearPass = 0;
 
@@ -262,15 +286,18 @@
         }
 
         var currPrinciple = startPrinciple;
+        var currPrincipleNoPay = startPrinciple;
 
 //set daily interest rate (banks divide by 365 even on leap years)
         var currInterest = startInterest / 365; 
 
         var PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
+        var PMTnoPay = PMT;
         console.log("PMT: $" + PMT);
         console.log('');
 
         var totalInterestCharged = 0;
+        var totalInterestChargedNoPay = 0;
 
         //interest changed count
         var icc = 0;
@@ -306,20 +333,37 @@
 
         //set array info to display payment changes in loan
         const variableChangeArray = [];
+        const variableChangeArrayNoPay = [];
         variableChangeArray[0] = 
             ["Starting Values",                             //Title
             currYear + "-" + currMonth + "-" + currDay,     //current date
             (startInterest * 100) + "%",                    //new interest
             "Starting Payment",                             //Statement if PMT recalculated
-            "<td>$" + PMT.toFixed(2)                            //PMT   
+            "<td>$" + PMT.toFixed(2)                        //PMT   
+        ]; 
+        variableChangeArrayNoPay[0] = 
+            ["Starting Values",                             //Title
+            currYear + "-" + currMonth + "-" + currDay,     //current date
+            (startInterest * 100) + "%",                    //new interest
+            "Starting Payment",                             //Statement if PMT recalculated
+            "<td>$" + PMTnoPay.toFixed(2)                   //PMTnoPay   
         ]; 
         var variableChangeCount = 1;
-
+        var variableChangeCountNoPay = 1;
 
         var stuckInLoop = false;
         var interestForInterval = 0;
+        var interestForIntervalNoPay = 0;
+
+        var simulationEndDate = null;
+        var simulationEndDateNoPay = null;
+
+
+
+
+
 //loop to calculate loan
-        while(currPrinciple > 0 && stuckInLoop == false)
+        while(currPrinciple > 0 || currPrincipleNoPay > 0 && stuckInLoop == false)
         {
 //change interest if possible 
             if(icc < interest.length){
@@ -333,13 +377,22 @@
                         currYear + "-" + currMonth + "-" + currDay,     //current date
                         interest[icc][3] + "%",                         //new interest
                         "NO",                                           //Statement if PMT recalculated
-                        "<td>$" + PMT.toFixed(2)                         //PMT   
-                    ];                                          
+                        "<td>$" + PMT.toFixed(2)                        //PMT   
+                    ];   
+
+                    variableChangeArrayNoPay[variableChangeCountNoPay] = 
+                        ["New Interest Rate",                           //Title
+                        currYear + "-" + currMonth + "-" + currDay,     //current date
+                        interest[icc][3] + "%",                         //new interest
+                        "NO",                                          //Statement if PMT recalculated
+                        "<td>$" + PMTnoPay.toFixed(2)                   //PMTnoPay   
+                    ];                                       
 
                     //calculates new PMT
                     currInterestPaymentsAnnual = newAnnualInterest(startIntervalStr, interest[icc][3]/100);
                     if(interest[icc][4] == 1 || lastInterest < currInterest){                    
                         PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
+                        PMTnoPay = getPMT(currPrincipleNoPay, currInterestPaymentsAnnual, amountOfPayments);
                         console.log("PMT set to: " + PMT);
 
                         variableChangeArray[variableChangeCount] = 
@@ -349,10 +402,19 @@
                             "YES",                                          //Statement if PMT recalculated
                             "<td style='background-color:#a1c5ff'>$" + PMT.toFixed(2)                            //new PMT   
                         ]; 
+
+                        variableChangeArrayNoPay[variableChangeCountNoPay] = 
+                            ["New Interest Rate",                           //Title
+                            currYear + "-" + currMonth + "-" + currDay,     //current date
+                            interest[icc][3] + "%",                         //new interest
+                            "YES",                                          //Statement if PMT recalculated
+                            "<td style='background-color:#a1c5ff'>$" + PMTnoPay.toFixed(2)                            //new PMTnoPay   
+                        ]; 
                     }   
 
                     icc++;
                     variableChangeCount++;
+                    variableChangeCountNoPay++;
                 }
             }
 
@@ -395,22 +457,44 @@
             interestForInterval = interestForInterval + (currPrinciple * currInterest);
             interestGraph = interestGraph + (currPrinciple * currInterest);
 
+            interestForIntervalNoPay = interestForIntervalNoPay + (currPrincipleNoPay * currInterest);
+            interestGraphNoPay = interestGraphNoPay + (currPrincipleNoPay * currInterest);
+
 //add repayment at interval and set new interval
             //reset amount left in interval
             if (interval == 0){
                 amountOfPayments--;
                 interval = setInterval(startIntervalStr, currMonth, currYear);
 
-                totalInterestCharged = totalInterestCharged + (PMT - (PMT - interestForInterval));
-                totalPaidGraph += PMT;
+                if(currPrinciple > 0){
+                    totalInterestCharged = totalInterestCharged + (PMT - (PMT - interestForInterval));
+                    totalPaidGraph += PMT;
+
+                    currPrinciple = currPrinciple - (PMT - interestForInterval);
+                }
+
+                if(currPrincipleNoPay > 0){
+                    totalInterestChargedNoPay = totalInterestChargedNoPay + (PMTnoPay - (PMTnoPay - interestForIntervalNoPay));
+                    totalPaidGraphNoPay += PMTnoPay;
+
+                    currPrincipleNoPay = currPrincipleNoPay - (PMTnoPay - interestForIntervalNoPay);
+                }
                 
-                currPrinciple = currPrinciple - (PMT - interestForInterval);
                 //console.log("interestForInterval: " + interestForInterval);
                 interestForInterval = 0;
-                //console.log("Pinciple: " + currPrinciple);
+                interestForIntervalNoPay = 0;
+                console.log("Pinciple: " + currPrinciple);
+            }
+            interval--;
+
+//save loan endDates
+            if(currPrinciple < 0 && simulationEndDate == null){
+                simulationEndDate = currYear+"-"+currMonth+"-"+currDay;
+            }
+            if(currPrincipleNoPay < 0 && simulationEndDateNoPay == null){
+                simulationEndDateNoPay = currYear+"-"+currMonth+"-"+currDay;
             }
 
-            interval--;
 
 //add day to loan and update month or year
             daysLeftInMonth--;
@@ -426,12 +510,38 @@
             countForYearPass++;
             if(countForYearPass == 366 || countForYearPass == 365 && currYear % 4 != 0 && (currYear % 100 == 0 || currYear % 400 != 0)){
                 countForYearPass = 0;
-                principleGraph[yearsCount] = currPrinciple.toFixed(2);
+                if(currPrinciple >= 0){
+                    principleGraph[yearsCount] = currPrinciple.toFixed(2);
 
-                totalGraph[yearsCount] = totalPaidGraph.toFixed(2);
+                    totalGraph[yearsCount] = totalPaidGraph.toFixed(2);
 
-                principleInterestGraph[yearsCount] = (currPrinciple + interestGraph).toFixed(2);
-                interestGraph = 0;
+                    principleInterestGraph[yearsCount] = (currPrinciple + interestGraph).toFixed(2);
+                    interestGraph = 0;
+                }else{
+                    principleGraph[yearsCount] = 0;
+
+                    totalGraph[yearsCount] = (totalPaidGraph + currPrinciple).toFixed(2);
+
+                    principleInterestGraph[yearsCount] = 0;
+                    interestGraph = 0;
+                }
+
+                if(currPrincipleNoPay >= 0){
+                    principleGraphNoPay[yearsCount] = currPrincipleNoPay.toFixed(2);
+
+                    totalGraphNoPay[yearsCount] = totalPaidGraphNoPay.toFixed(2);
+
+                    principleInterestGraphNoPay[yearsCount] = (currPrincipleNoPay + interestGraphNoPay).toFixed(2);
+                    interestGraphNoPay = 0;
+                }else{
+                    principleGraphNoPay[yearsCount] = 0;
+
+                    totalGraphNoPay[yearsCount] = (totalPaidGraphNoPay + currPrincipleNoPay).toFixed(2);
+
+                    principleInterestGraphNoPay[yearsCount] = 0;
+                    interestGraph = 0;
+                }
+
                 yearsCount++;
             }
 
@@ -445,7 +555,7 @@
             console.log("Loan finished normally and paid off principle");
         }else{
             console.log("Got stuck in loop or excided repayments by 2 payments!");
-            warningText = "Exceeded repayments by 2 payments! <br> Or got stuck in loop. (Error in code)";
+            warningText = "Exceeded repayments by 2 payments!";
         }
         console.log("amountOfPayments Remaining: " + amountOfPayments);
         console.log("total amount spent on repayments: " + (totalInterestCharged + startPrinciple + currPrinciple));//currPrinciple to remove negative amount
@@ -456,16 +566,20 @@
             console.log("");
             console.log("Adding last value to graphs");
             principleGraph[yearsCount] = 0;
-            totalGraph[yearsCount] = totalPaidGraph.toFixed(2);
+            totalGraph[yearsCount] = (totalPaidGraph + currPrinciple).toFixed(2);
             principleInterestGraph[yearsCount] = 0;
+
+            principleGraphNoPay[yearsCount] = 0;
+            totalGraphNoPay[yearsCount] = (totalPaidGraphNoPay + currPrincipleNoPay).toFixed(2);
+            principleInterestGraphNoPay[yearsCount] = 0;
 
             console.log("Principle Graph: " + principleGraph);
             console.log("Total Paid Graph: " + totalGraph);
             console.log("Principle and Interest Graph: " + principleInterestGraph);
         }
 
-        var variableChangeTable = "<br><table class='table table-bordered table-striped'><tbody><thead class='table-'><tr><th>Reason</th><th>Date</th><th>Amount</th><th>Payment Recalculated</th><th>Payment Per Interval</th></tr></thead>";
-        console.log(variableChangeArray)
+        var variableChangeTable = "<br><h3>Normal Loan Changes</h3><table class='table table-bordered table-striped'><tbody><thead class='table-'><tr><th>Reason</th><th>Date</th><th>Amount</th><th>Payment Recalculated</th><th>Payment Per Interval</th></tr></thead>";
+        console.log("Variable Change Array:" + variableChangeArray);
         var i = 0;
         while(i < variableChangeArray.length){
             variableChangeTable += "<tr><td>"+ variableChangeArray[i][0] +"</td>";
@@ -476,6 +590,19 @@
             i++;
         }
         variableChangeTable += "</tbody></table>"
+
+        var variableChangeTableNoPay = "<br><h3>Loan Changes No Additional Payments</h3><table class='table table-bordered table-striped'><tbody><thead class='table-'><tr><th>Reason</th><th>Date</th><th>Amount</th><th>Payment Recalculated</th><th>Payment Per Interval</th></tr></thead>";
+        console.log("Variable Change Array:" + variableChangeArrayNoPay);
+        var i = 0;
+        while(i < variableChangeArrayNoPay.length){
+            variableChangeTableNoPay += "<tr><td>"+ variableChangeArrayNoPay[i][0] +"</td>";
+            variableChangeTableNoPay += "<td>"+ variableChangeArrayNoPay[i][1] +"</td>";
+            variableChangeTableNoPay += "<td>"+ variableChangeArrayNoPay[i][2] +"</td>";
+            variableChangeTableNoPay += "<td>"+ variableChangeArrayNoPay[i][3] +"</td>";
+            variableChangeTableNoPay += variableChangeArrayNoPay[i][4] +"</td></tr>";
+            i++;
+        }
+        variableChangeTableNoPay += "</tbody></table>"
 
 
         function newAnnualInterest(startIntervalStr, newInterest){
@@ -549,12 +676,18 @@
             }
         }
 
-        document.getElementById("currDate").innerHTML = currYear+"-"+currMonth+"-"+currDay;
-        document.getElementById("totalPaid").innerHTML = "$"+(totalInterestCharged+startPrinciple+currPrinciple).toFixed(2);
+        document.getElementById("finDate").innerHTML = simulationEndDate;
+        document.getElementById("totalPaid").innerHTML = "$"+(totalPaidGraph + currPrinciple).toFixed(2);
         document.getElementById("interestPaid").innerHTML = "$"+totalInterestCharged.toFixed(2);
+
+        document.getElementById("finDateNoPay").innerHTML = simulationEndDateNoPay;
+        document.getElementById("totalPaidNoPay").innerHTML = "$"+(totalPaidGraphNoPay + currPrincipleNoPay).toFixed(2);
+        document.getElementById("interestPaidNoPay").innerHTML = "$"+totalInterestChargedNoPay.toFixed(2);
+
         document.getElementById("endingWarning").innerHTML = warningText;
 
         document.getElementById("variableTable").innerHTML = variableChangeTable;
+        document.getElementById("variableTableNoPay").innerHTML = variableChangeTableNoPay;
         
     </script>
 
@@ -580,6 +713,24 @@
                 backgroundColor: 'rgba(255, 253, 115, 0.2)',
                 borderColor: 'rgb(217, 213, 4)',
                 data: totalGraph
+            }
+
+    //DATA FOR nO ADDITIONAL PAYMENTS
+            ,{
+                label: 'Principle Remaining No Payments',
+                backgroundColor: 'rgba(160, 117, 240, 0.2)',
+                borderColor: 'rgb(129, 66, 245)',
+                data: principleGraphNoPay,
+              },{
+                label: 'Princple With Interest Remaining No Payments',
+                backgroundColor: 'rgba(240, 134, 238, 0.2)',
+                borderColor: 'rgb(242, 85, 240)',
+                data: principleInterestGraphNoPay
+            },{
+                label: 'Total Paid No Payments',
+                backgroundColor: 'rgba(130, 59, 161, 0.2)',
+                borderColor: 'rgb(130, 23, 176)',
+                data: totalGraphNoPay
             }]
             },
             options: {
