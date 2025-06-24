@@ -483,7 +483,7 @@
                 //console.log("interestForInterval: " + interestForInterval);
                 interestForInterval = 0;
                 interestForIntervalNoPay = 0;
-                console.log("Pinciple: " + currPrinciple);
+                //console.log("Pinciple: " + currPrinciple);
             }
             interval--;
 

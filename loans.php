@@ -71,9 +71,9 @@
                 echo "<td valign=\"top\">$$startPrinciple</td>";
                 echo "<td valign=\"top\">$durationYears</td>";
                 echo "<td valign=\"top\">$paymentInterval</td>";
-                createButtonColumn1("DB_set", $id, "View Changing Elements", "loan-elements.php");
-                createButtonColumn2("DB_set", $id, "Edit", "edit-loan.php");
-                createButtonColumn3("DB_set", $id, "Delete", "delete-loan.php");
+                createButtonColumn1($id, "View Changing Elements", "loan-elements.php", "btn btn-primary");
+                createButtonColumn1($id, "Edit", "edit-loan.php", "btn btn-warning");
+                createButtonColumn1($id, "Delete", "delete-loan.php", "btn btn-danger");
                 echo "</tr>";
             }
 
@@ -90,31 +90,13 @@
             require('login.php');
         }
 
-        //view changing elements in loan
-        function createButtonColumn1($hiddenName, $hiddenValue, $buttonText, $actionPage) {
+        //view changing elements in loan, edit, delete loan
+        function createButtonColumn1($Db_set, $buttonText, $actionPage, $btnType) {
             echo "<td>";
             echo "<form action=\"$actionPage\" method=\"GET\">";
-            echo "<input type=\"hidden\" name=\"$hiddenName\" value=\"$hiddenValue\">";
-            echo "<button type=\"submit\" class=\"btn btn-primary\">$buttonText</button>";
+            echo "<input type=\"hidden\" name=\"DB_set\" value=\"$Db_set\">";
+            echo "<button type=\"submit\" class=\"$btnType\">$buttonText</button>";
             echo "</form>";             
-            echo "</td>";
-        }
-        //edit loan
-        function createButtonColumn2($hiddenName, $hiddenValue, $buttonText, $actionPage) {
-            echo "<td>";
-            echo "<form action=\"$actionPage\" method=\"GET\">";
-            echo "<input type=\"hidden\" name=\"$hiddenName\" value=\"$hiddenValue\">";
-            echo "<button type=\"submit\" class=\"btn btn-warning\">$buttonText</button>";
-            echo "</form>";            
-            echo "</td>";
-        }
-        //delete loan
-        function createButtonColumn3($hiddenName, $hiddenValue, $buttonText, $actionPage) {
-            echo "<td>";
-            echo "<form action=\"$actionPage\" method=\"GET\">";
-            echo "<input type=\"hidden\" name=\"$hiddenName\" value=\"$hiddenValue\">";
-            echo "<button type=\"submit\" class=\"btn btn-danger\">$buttonText</button>";
-            echo "</form>";            
             echo "</td>";
         }
         ?>
