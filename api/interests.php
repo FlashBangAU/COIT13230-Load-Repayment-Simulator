@@ -41,7 +41,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 
                 // Your PHP button functions output buttons inside <td> cells
                 editBtn("edit-interest-btn", $DB_set, $row['interest_ID'], $row['date_interest'], $row['new_val_interest'], $row['update_PMT'], "Edit");
-                deleteBtn("delete-interest-btn", $DB_set, $row['interest_ID'], $row['date_interest'], "Delete");
+                deleteBtn("delete-interest-btn", $DB_set, $row['interest_ID'], $row['date_interest'], $row['new_val_interest'], $row['update_PMT'], "Delete");
 
                 echo "</tr>";
             }

@@ -207,438 +207,318 @@
     </div>
 
     <script>
-document.addEventListener("DOMContentLoaded", function () {
-    // === INTEREST ADD ===
-    const addInterestModal = new bootstrap.Modal(document.getElementById('addInterestModal'));
-    document.querySelectorAll('.add-interest-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            document.getElementById('int-add-db-set').value = button.getAttribute('data-db');
-            addInterestModal.show();
+    document.addEventListener("DOMContentLoaded", function () {
+        // === INTEREST ADD ===
+        const addInterestModal = new bootstrap.Modal(document.getElementById('addInterestModal'));
+        document.querySelectorAll('.add-interest-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                document.getElementById('int-add-db-set').value = button.getAttribute('data-db');
+                addInterestModal.show();
+            });
         });
-    });
-    document.getElementById('addInterestForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        // build payload + fetch (your original code)
-        const ID_user = <?php echo isset($_SESSION['id-user']) ? (int)$_SESSION['id-user'] : 'null'; ?>;
-        const formData = new FormData(this);
 
-        const payload = {
-            ID_user,
-            DB_set: parseInt(document.getElementById('int-add-db-set').value),
-            date_interest: formData.get("date"),
-            new_val_interest: parseFloat(formData.get("amount")),
-            update_PMT: formData.get("add-int-update_PMT") ? 1 : 0
-        };
+        document.getElementById('addInterestForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            // build payload + fetch (your original code)
+            const ID_user = <?php echo isset($_SESSION['id-user']) ? (int)$_SESSION['id-user'] : 'null'; ?>;
+            const formData = new FormData(this);
 
-        console.log("Submitting with:", payload);
+            const payload = {
+                ID_user,
+                DB_set: parseInt(document.getElementById('int-add-db-set').value),
+                date_interest: formData.get("date"),
+                new_val_interest: parseFloat(formData.get("amount")),
+                update_PMT: formData.get("add-int-update_PMT") ? 1 : 0
+            };
 
-        fetch('api/interests.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error: ' + data.message);
+            console.log("Submitting with:", payload);
+
+            fetch('api/interests.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('A network or server error occurred.');
+            });
+        });
+
+        // === INTEREST EDIT ===
+        const editInterestModal = new bootstrap.Modal(document.getElementById('editInterestModal'));
+        document.querySelector("#interestsTable tbody").addEventListener("click", function (e) {
+            if (e.target.classList.contains("edit-interest-btn")) {
+                // fill form + show modal
+                const button = e.target;
+
+                document.getElementById('int-edit-db-set').value = button.getAttribute('data-db');
+                document.getElementById('int-edit-interest-id').value = button.getAttribute('data-id');
+                document.getElementById('int-edit-date').value = button.getAttribute('data-date');
+                document.getElementById('int-edit-amount').value = button.getAttribute('data-amount');
+                document.getElementById('int-edit-update-pmt').checked = button.getAttribute('data-pmt') === "1";
+
+                editInterestModal.show();
             }
-        })
-        .catch(error => {
-            console.error(error);
-            alert('A network or server error occurred.');
         });
-    });
 
-    // === INTEREST EDIT / DELETE ===
-    const editInterestModal = new bootstrap.Modal(document.getElementById('editInterestModal'));
-    document.querySelector("#interestsTable tbody").addEventListener("click", function (e) {
-        if (e.target.classList.contains("edit-interest-btn")) {
-            // fill form + show modal
-            const button = e.target;
+        document.getElementById('editInterestForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            // build payload + fetch (PUT)
+            const ID_user = <?= json_encode($_SESSION['id-user'] ?? null) ?>;
+            const formData = new FormData(this);
 
-            document.getElementById('int-edit-db-set').value = button.getAttribute('data-db');
-            document.getElementById('int-edit-interest-id').value = button.getAttribute('data-id');
-            document.getElementById('int-edit-date').value = button.getAttribute('data-date');
-            document.getElementById('int-edit-amount').value = button.getAttribute('data-amount');
-            document.getElementById('int-edit-update-pmt').checked = button.getAttribute('data-pmt') === "1";
+            const payload = {
+                ID_user,
+                DB_set: parseInt(document.getElementById('int-edit-db-set').value),
+                interest_ID: parseInt(document.getElementById('int-edit-interest-id').value),
+                date_interest: formData.get("date"),
+                new_val_interest: Number(formData.get("amount")),
+                update_PMT: formData.get("int-edit-update_PMT") ? 1 : 0
+            };
 
-            editInterestModal.show();
-        }
-        if (e.target.classList.contains("delete-interest-btn")) {
-            // confirm + fetch delete
-            const button = e.target;
+            console.log("Submitting with:", payload);
 
-            const dbSet = button.getAttribute('data-db');
-            const interestID = button.getAttribute('data-id');
-            const amount = button.getAttribute('data-amount');
+            fetch('api/interests.php', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('A network or server error occurred.');
+            });
+        });
 
-            if (!confirm(`Delete $${amount} Interest?`)) return;
+        // === INTEREST DELETE ===
+        const deleteInterestModal = new bootstrap.Modal(document.getElementById('deleteInterestModal'));
+        document.querySelector("#interestsTable tbody").addEventListener("click", function (e) {
+            if (e.target.classList.contains("delete-interest-btn")) {
+                // fill form + show modal
+                const button = e.target;
+
+                document.getElementById('int-delete-db-set').value = button.getAttribute('data-db');
+                document.getElementById('int-delete-interest-id').value = button.getAttribute('data-id');
+                document.getElementById('int-delete-date').value = button.getAttribute('data-date');
+                document.getElementById('int-delete-amount').value = button.getAttribute('data-amount');
+                document.getElementById('int-delete-update-pmt').checked = button.getAttribute('data-pmt') === "1";
+
+                deleteInterestModal.show();
+            }
+        });
+
+        document.getElementById('deleteInterestForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            // build payload + fetch (DELETE)
+            const ID_user = <?= json_encode($_SESSION['id-user'] ?? null) ?>;
+            const formData = new FormData(this);
+
+            const payload = {
+                ID_user,
+                DB_set: parseInt(document.getElementById('int-delete-db-set').value),
+                interest_ID: parseInt(document.getElementById('int-delete-interest-id').value)
+            };
+
+            console.log("Submitting with:", payload);
 
             fetch('api/interests.php', {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ 
-                    DB_set: parseInt(dbSet),
-                    interest_ID: parseInt(interestID)
-                })
+                body: JSON.stringify(payload)
             })
-            .then(response => {
-                if (!response.ok) throw new Error("Server error");
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    button.closest('tr').remove();
+                    location.reload();
                 } else {
-                    alert("Error: " + data.message);
+                    alert('Error: ' + data.message);
                 }
             })
             .catch(error => {
-                console.error('Fetch error:', error);
-                alert("A network error occurred or invalid JSON received.");
+                console.error(error);
+                alert('A network or server error occurred.');
             });
-        }
-    });
-    document.getElementById('editInterestForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        // build payload + fetch (PUT)
-        const ID_user = <?= json_encode($_SESSION['id-user'] ?? null) ?>;
-        const formData = new FormData(this);
+        });
 
-        const payload = {
-            ID_user,
-            DB_set: parseInt(document.getElementById('int-edit-db-set').value),
-            interest_ID: parseInt(document.getElementById('int-edit-interest-id').value),
-            date_interest: formData.get("date"),
-            new_val_interest: Number(formData.get("amount")),
-            update_PMT: formData.get("int-edit-update_PMT") ? 1 : 0
-        };
+        // === PAYMENT ADD ===
+        const addPaymentModal = new bootstrap.Modal(document.getElementById('addPaymentModal'));
+        document.querySelectorAll('.add-payment-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                document.getElementById('pay-add-db-set').value = button.getAttribute('data-db');
+                addPaymentModal.show();
+            });
+        });
 
-        console.log("Submitting with:", payload);
+        document.getElementById('addPaymentForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            // build payload + fetch (POST)
+            const ID_user = <?php echo isset($_SESSION['id-user']) ? (int)$_SESSION['id-user'] : 'null'; ?>;
+            const formData = new FormData(this);
 
-        fetch('api/interests.php', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error: ' + data.message);
+            const payload = {
+                ID_user,
+                DB_set: parseInt(document.getElementById('pay-add-db-set').value),
+                date_additional_payment: formData.get("date"),
+                amount_additional_payments: Number(formData.get("amount")),
+                update_PMT: formData.get("add-pay-update_PMT") ? 1 : 0
+            };
+
+            console.log("Submitting with:", payload);
+
+            fetch('api/payments.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('A network or server error occurred.');
+            });
+        });
+
+        // === PAYMENT EDIT  ===
+        const editPaymentModal = new bootstrap.Modal(document.getElementById('editPaymentModal'));
+        document.querySelector("#paymentsTable tbody").addEventListener("click", function (e) {
+            if (e.target.classList.contains("edit-payment-btn")) {
+                // fill form + show modal
+                const button = e.target;
+
+                document.getElementById('pay-edit-db-set').value = button.getAttribute('data-db');
+                document.getElementById('pay-edit-payment-id').value = button.getAttribute('data-id');
+                document.getElementById('pay-edit-date').value = button.getAttribute('data-date');
+                document.getElementById('pay-edit-amount').value = button.getAttribute('data-amount');
+                document.getElementById('pay-edit-update-pmt').checked = button.getAttribute('data-pmt') === "1";
+
+                editPaymentModal.show();
             }
-        })
-        .catch(error => {
-            console.error(error);
-            alert('A network or server error occurred.');
         });
-    });
 
-    // === PAYMENT ADD ===
-    const addPaymentModal = new bootstrap.Modal(document.getElementById('addPaymentModal'));
-    document.querySelectorAll('.add-payment-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            document.getElementById('pay-add-db-set').value = button.getAttribute('data-db');
-            addPaymentModal.show();
+        document.getElementById('editPaymentForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            // build payload + fetch (PUT)
+            const ID_user = <?= json_encode($_SESSION['id-user'] ?? null) ?>;
+            const formData = new FormData(this);
+
+            const payload = {
+                ID_user,
+                DB_set: parseInt(document.getElementById('pay-edit-db-set').value),
+                payment_ID: parseInt(document.getElementById('pay-edit-payment-id').value),
+                date_additional_payment: formData.get("date"),
+                amount_additional_payments: Number(formData.get("amount")),
+                update_PMT: formData.get("edit-pay-update_PMT") ? 1 : 0
+            };
+
+            console.log("Submitting with:", payload);
+
+            fetch('api/payments.php', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('A network or server error occurred.');
+            });
         });
-    });
-    document.getElementById('addPaymentForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        // build payload + fetch (POST)
-        const ID_user = <?php echo isset($_SESSION['id-user']) ? (int)$_SESSION['id-user'] : 'null'; ?>;
-        const formData = new FormData(this);
 
-        const payload = {
-            ID_user,
-            DB_set: parseInt(document.getElementById('pay-add-db-set').value),
-            date_additional_payment: formData.get("date"),
-            amount_additional_payments: Number(formData.get("amount")),
-            update_PMT: formData.get("add-pay-update_PMT") ? 1 : 0
-        };
+        // === PAYMENT DELETE  ===
+        const deletePaymentModal = new bootstrap.Modal(document.getElementById('deletePaymentModal'));
+        document.querySelector("#paymentsTable tbody").addEventListener("click", function (e) {
+            if (e.target.classList.contains("delete-payment-btn")) {
+                // fill form + show modal
+                const button = e.target;
 
-        console.log("Submitting with:", payload);
+                document.getElementById('pay-delete-db-set').value = button.getAttribute('data-db');
+                document.getElementById('pay-delete-payment-id').value = button.getAttribute('data-id');
+                document.getElementById('pay-delete-date').value = button.getAttribute('data-date');
+                document.getElementById('pay-delete-amount').value = button.getAttribute('data-amount');
+                document.getElementById('pay-delete-update-pmt').checked = button.getAttribute('data-pmt') === "1";
 
-        fetch('api/payments.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error: ' + data.message);
+                deletePaymentModal.show();
             }
-        })
-        .catch(error => {
-            console.error(error);
-            alert('A network or server error occurred.');
         });
-    });
 
-    // === PAYMENT EDIT / DELETE ===
-    const editPaymentModal = new bootstrap.Modal(document.getElementById('editPaymentModal'));
-    document.querySelector("#paymentsTable tbody").addEventListener("click", function (e) {
-        if (e.target.classList.contains("edit-payment-btn")) {
-            // fill form + show modal
-            const button = e.target;
+        document.getElementById('deletePaymentForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            // build payload + fetch (DELETE)
+            const ID_user = <?= json_encode($_SESSION['id-user'] ?? null) ?>;
+            const formData = new FormData(this);
 
-            document.getElementById('pay-edit-db-set').value = button.getAttribute('data-db');
-            document.getElementById('pay-edit-payment-id').value = button.getAttribute('data-id');
-            document.getElementById('pay-edit-date').value = button.getAttribute('data-date');
-            document.getElementById('pay-edit-amount').value = button.getAttribute('data-amount');
-            document.getElementById('pay-edit-update-pmt').checked = button.getAttribute('data-pmt') === "1";
+            const payload = {
+                ID_user,
+                DB_set: parseInt(document.getElementById('pay-delete-db-set').value),
+                payment_ID: parseInt(document.getElementById('pay-delete-payment-id').value)
+            };
 
-            editPaymentModal.show();
-        }
-        if (e.target.classList.contains("delete-payment-btn")) {
-            // confirm + fetch delete
-            const button = e.target;
-
-            const dbSet = button.getAttribute('data-db');
-            const paymentID = button.getAttribute('data-id');
-            const amount = button.getAttribute('data-amount');
-
-            if (!confirm(`Delete $${amount} Payment?`)) return;
+            console.log("Submitting with:", payload);
 
             fetch('api/payments.php', {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ 
-                    DB_set: parseInt(dbSet),
-                    payment_ID: parseInt(paymentID)
-                })
+                body: JSON.stringify(payload)
             })
-            .then(response => {
-                if (!response.ok) throw new Error("Server error");
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    button.closest('tr').remove();
+                    location.reload();
                 } else {
-                    alert("Error: " + data.message);
+                    alert('Error: ' + data.message);
                 }
             })
             .catch(error => {
-                console.error('Fetch error:', error);
-                alert("A network error occurred or invalid JSON received.");
+                console.error(error);
+                alert('A network or server error occurred.');
             });
-        }
-    });
-
-    document.getElementById('editPaymentForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        // build payload + fetch (PUT)
-        const ID_user = <?= json_encode($_SESSION['id-user'] ?? null) ?>;
-        const formData = new FormData(this);
-
-        const payload = {
-            ID_user,
-            DB_set: parseInt(document.getElementById('pay-edit-db-set').value),
-            payment_ID: parseInt(document.getElementById('pay-edit-payment-id').value),
-            date_additional_payment: formData.get("date"),
-            amount_additional_payments: Number(formData.get("amount")),
-            update_PMT: formData.get("edit-pay-update_PMT") ? 1 : 0
-        };
-
-        console.log("Submitting with:", payload);
-
-        fetch('api/payments.php', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error(error);
-            alert('A network or server error occurred.');
         });
     });
-});
 </script>
 
-
-    <!-- Add Interest Modal -->
-    <div class="modal fade" id="addInterestModal" tabindex="-1" aria-labelledby="addInterestModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form id="addInterestForm">
-            <div class="modal-header">
-              <h5 class="modal-title" id="addInterestModalLabel">Add Interest</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="int-add-db-set" name="DB_set">
-
-                <div class="mb-3">
-                  <label for="add-date" class="form-label">Date</label>
-                  <input type="date" class="form-control" id="int-add-date" name="date" required>
-                </div>
-
-                <div class="mb-3">
-                  <label for="add-amount" class="form-label">Amount</label>
-                  <input type="number" class="form-control" id="int-add-amount" name="amount" min="0" max="100" step="any" required>
-                </div>
-
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="int-add-update-pmt" name="add-int-update_PMT">
-                  <label class="form-check-label" for="int-add-update-pmt">
-                    Update PMT
-                  </label>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-     <!-- Edit Interest Modal -->
-    <div class="modal fade" id="editInterestModal" tabindex="-1" aria-labelledby="editInterestModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form id="editInterestForm">
-            <div class="modal-header">
-              <h5 class="modal-title" id="editInterestModalLabel">Edit Interest</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <input type="hidden" id="int-edit-db-set">
-              <input type="hidden" id="int-edit-interest-id">
-              <input type="hidden" id="int-edit-user-id">
-
-              <div class="mb-3">
-                <label for="edit-date" class="form-label">Date</label>
-                <input type="date" class="form-control" id="int-edit-date" name="date" required>
-              </div>
-
-              <div class="mb-3">
-                <label for="edit-amount" class="form-label">Amount</label>
-                <input type="number" class="form-control" id="int-edit-amount" name="amount" min="0" max="100" step="any" required>
-              </div>
-
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="int-edit-update-pmt" name="int-edit-update_PMT">
-                <label class="form-check-label" for="int-edit-update-pmt">
-                  Update PMT
-                </label>
-              </div>
-            </div>
-
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-
-
-    <!-- Add Payment Modal -->
-    <div class="modal fade" id="addPaymentModal" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form id="addPaymentForm">
-            <div class="modal-header">
-              <h5 class="modal-title" id="addPaymentModalLabel">Add Payment</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="pay-add-db-set" name="DB_set">
-
-                <div class="mb-3">
-                  <label for="add-date" class="form-label">Date</label>
-                  <input type="date" class="form-control" id="pay-add-date" name="date" required>
-                </div>
-
-                <div class="mb-3">
-                  <label for="add-amount" class="form-label">Amount</label>
-                  <input type="number" class="form-control" id="pay-add-amount" name="amount" min="0" step="any" required>
-                </div>
-
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="pay-add-update-pmt" name="add-pay-update_PMT">
-                  <label class="form-check-label" for="pay-add-update-pmt">
-                    Update PMT
-                  </label>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Edit Payment Modal -->
-    <div class="modal fade" id="editPaymentModal" tabindex="-1" aria-labelledby="editPaymentModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form id="editPaymentForm">
-            <div class="modal-header">
-              <h5 class="modal-title" id="editPaymentModalLabel">Edit Payment</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="pay-edit-db-set" name="DB_set">
-                <input type="hidden" id="pay-edit-payment-id" name="payment_ID">
-                <input type="hidden" id="pay-edit-user-id" name="ID_user">
-
-                <div class="mb-3">
-                  <label for="edit-date" class="form-label">Date</label>
-                  <input type="date" class="form-control" id="pay-edit-date" name="date" required>
-                </div>
-
-                <div class="mb-3">
-                  <label for="edit-amount" class="form-label">Amount</label>
-                  <input type="number" class="form-control" id="pay-edit-amount" name="amount" min="0" step="any" required>
-                </div>
-
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="pay-edit-update-pmt" name="edit-pay-update_PMT">
-                  <label class="form-check-label" for="pay-edit-update-pmt">
-                    Update PMT
-                  </label>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+<?php
+    include("modal-functions.html");
+?>
 
 </body>
 </html>

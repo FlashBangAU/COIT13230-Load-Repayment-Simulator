@@ -37,25 +37,18 @@
 
 
     //delete button
-    function deleteBtn($deleteType, $hiddenValue1, $hiddenValue2, $amount, $buttonText) {
+    function deleteBtn($deleteType, $dbSet, $paymentId, $date, $amount, $pmt, $buttonText) {
         echo "<td>";
-        if($deleteType == "delete-interest-btn"){
-            echo "<button 
-                class=\"btn btn-danger delete-interest-btn\" 
-                data-db=\"$hiddenValue1\" 
-                data-id=\"$hiddenValue2\"
-                data-amount=\"$amount\">
-                $buttonText
-              </button>";
-        }else{
+        $btnClass = $deleteType === "delete-interest-btn" ? "delete-interest-btn" : "delete-payment-btn";
         echo "<button 
-                class=\"btn btn-danger delete-payment-btn\" 
-                data-db=\"$hiddenValue1\" 
-                data-id=\"$hiddenValue2\"
-                data-amount=\"$amount\">
-                $buttonText
-              </button>";
-        }
+            class=\"btn btn-danger $btnClass\" 
+            data-db=\"$dbSet\" 
+            data-id=\"$paymentId\" 
+            data-date=\"$date\" 
+            data-amount=\"$amount\" 
+            data-pmt=\"$pmt\">
+            $buttonText
+        </button>";
         echo "</td>";
     }
 ?>

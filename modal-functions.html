@@ -1,0 +1,235 @@
+<!-- Add Interest Modal -->
+<div class="modal fade" id="addInterestModal" tabindex="-1" aria-labelledby="addInterestModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="addInterestForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addInterestModalLabel">Add Interest</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="int-add-db-set" name="DB_set">
+
+            <div class="mb-3">
+              <label for="add-date" class="form-label">Date</label>
+              <input type="date" class="form-control" id="int-add-date" name="date" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="add-amount" class="form-label">Amount (%)</label>
+              <input type="number" class="form-control" id="int-add-amount" name="amount" min="0" max="100" step="any" required>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="int-add-update-pmt" name="add-int-update_PMT">
+              <label class="form-check-label" for="int-add-update-pmt">
+                Update PMT
+              </label>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+ <!-- Edit Interest Modal -->
+<div class="modal fade" id="editInterestModal" tabindex="-1" aria-labelledby="editInterestModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="editInterestForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editInterestModalLabel">Edit Interest</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body"
+          <input type="hidden" id="int-edit-db-set">
+          <input type="hidden" id="int-edit-interest-id">
+          <input type="hidden" id="int-edit-user-id">
+
+          <div class="mb-3">
+            <label for="edit-date" class="form-label">Date</label>
+            <input type="date" class="form-control" id="int-edit-date" name="date" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="edit-amount" class="form-label">Amount (%)</label>
+            <input type="number" class="form-control" id="int-edit-amount" name="amount" min="0" max="100" step="any" required>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="int-edit-update-pmt" name="int-edit-update_PMT">
+            <label class="form-check-label" for="int-edit-update-pmt">
+              Update PMT
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Interest Modal -->
+<div class="modal fade" id="deleteInterestModal" tabindex="-1" aria-labelledby="deleteInterestModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="deleteInterestForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteInterestModalLabel">Delete Interest</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="int-delete-db-set" name="DB_set">
+            <input type="hidden" id="int-delete-interest-id" name="interest_ID">
+            <input type="hidden" id="int-delete-user-id" name="ID_user">
+
+            <table style="border: transparent;">
+              <tr>
+                <td>Date</td>
+                <td><input class="form-control" type="text" id="int-delete-date" disabled></td>
+              </tr>
+              <tr>
+                <td>Amount (%)</td>
+                <td><input class="form-control" type="number" id="int-delete-amount" disabled></td>
+              </tr>
+              <tr>
+                <td>Update PMT</td>
+                <td><input class="form-check-input" type="checkbox" id="int-delete-update-pmt" disabled></td>
+              </tr>
+            </table>
+            </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-danger">Delete Interest</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Add Payment Modal -->
+<div class="modal fade" id="addPaymentModal" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="addPaymentForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addPaymentModalLabel">Add Payment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="pay-add-db-set" name="DB_set">
+
+            <div class="mb-3">
+              <label for="add-date" class="form-label">Date</label>
+              <input type="date" class="form-control" id="pay-add-date" name="date" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="add-amount" class="form-label">Amount</label>
+              <input type="number" class="form-control" id="pay-add-amount" name="amount" min="0" step="any" required>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="pay-add-update-pmt" name="add-pay-update_PMT">
+              <label class="form-check-label" for="pay-add-update-pmt">
+                Update PMT
+              </label>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Payment Modal -->
+<div class="modal fade" id="editPaymentModal" tabindex="-1" aria-labelledby="editPaymentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="editPaymentForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editPaymentModalLabel">Edit Payment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="pay-edit-db-set" name="DB_set">
+            <input type="hidden" id="pay-edit-payment-id" name="payment_ID">
+            <input type="hidden" id="pay-edit-user-id" name="ID_user">
+
+            <div class="mb-3">
+              <label for="edit-date" class="form-label">Date</label>
+              <input type="date" class="form-control" id="pay-edit-date" name="date" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="edit-amount" class="form-label">Amount</label>
+              <input type="number" class="form-control" id="pay-edit-amount" name="amount" min="0" step="any" required>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="pay-edit-update-pmt" name="edit-pay-update_PMT">
+              <label class="form-check-label" for="pay-edit-update-pmt">
+                Update PMT
+              </label>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Payment Modal -->
+<div class="modal fade" id="deletePaymentModal" tabindex="-1" aria-labelledby="deletePaymentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="deletePaymentForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deletePaymentModalLabel">Delete Payment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="pay-delete-db-set" name="DB_set">
+            <input type="hidden" id="pay-delete-payment-id" name="payment_ID">
+            <input type="hidden" id="pay-delete-user-id" name="ID_user">
+
+            <table style="border: transparent;">
+              <tr>
+                <td>Date</td>
+                <td><input class="form-control" type="text" id="pay-delete-date" disabled></td>
+              </tr>
+              <tr>
+                <td>Amount</td>
+                <td><input class="form-control" type="number" id="pay-delete-amount" disabled></td>
+              </tr>
+              <tr>
+                <td>Update PMT</td>
+                <td><input class="form-check-input" type="checkbox" id="pay-delete-update-pmt" disabled></td>
+              </tr>
+            </table>
+            </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-danger">Delete Payment</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

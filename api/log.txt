@@ -133,3 +133,21 @@ Array
     [amount_additional_payments] => 32
     [update_PMT] => 1
 )
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 3
+    [date_additional_payment] => 2025-06-13
+    [amount_additional_payments] => 32
+    [update_PMT] => 0
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 1
+    [date_additional_payment] => 2025-06-06
+    [amount_additional_payments] => 3243
+    [update_PMT] => 1
+)
