@@ -16,14 +16,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
 
         case 'GET':
-            // User is already validated at the top
             $ID_user = (int)$_SESSION['id-user'];
-
             $DB_set = $_GET['db_set'] ?? null;
 
             if (!$ID_user || !$DB_set) {
                 http_response_code(400);
-                echo "Missing user_id or db_set";
+                echo json_encode(["error" => "Missing user_id or db_set"]);
                 exit;
             }
 
@@ -33,24 +31,18 @@ switch ($_SERVER['REQUEST_METHOD']) {
             $stmt->execute();
             $result = $stmt->get_result();
 
+            $rows = [];
             while ($row = $result->fetch_assoc()) {
-                echo "<tr>";
-                echo "<td>" . htmlspecialchars($row['date_interest']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['new_val_interest']) . "%</td>";
-                echo "<td><input type='checkbox' name='updatePMT' class='form-check-input' " . ($row['update_PMT'] == 1 ? "checked" : "") . " disabled></td>";
-                
-                // Your PHP button functions output buttons inside <td> cells
-                editBtn("edit-interest-btn", $DB_set, $row['interest_ID'], $row['date_interest'], $row['new_val_interest'], $row['update_PMT'], "Edit");
-                deleteBtn("delete-interest-btn", $DB_set, $row['interest_ID'], $row['date_interest'], $row['new_val_interest'], $row['update_PMT'], "Delete");
-
-                echo "</tr>";
+                $rows[] = $row;
             }
+
+            echo json_encode($rows);
 
             $stmt->close();
             $result->free();
             $db->close();
-
         break;
+
 
 
         case 'POST':

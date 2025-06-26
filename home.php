@@ -30,7 +30,7 @@
 				echo "Welcome, $name.<br><br>";
 
 				echo "<h2>Your Options</h2>";
-				echo '<p><a href="loans.php" class="btn btn-primary">View all home loans</a>	';
+				echo '<p><a href="view-loans.php" class="btn btn-primary">View all home loans</a>	';
 				echo '<a href="add-loan.php" class="btn btn-warning">Add a loan</a></p>';
 				echo <<<END
 					<p>

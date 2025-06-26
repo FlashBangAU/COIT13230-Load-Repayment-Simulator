@@ -49,7 +49,6 @@
         if ($validLogin || $validSession) {
             echo '<h1 class="text-center my-4">Loan Elements</h1>';
 
-            require("db-connection.php");
 
             // Validate and get DB_set from GET parameter
             if (isset($_GET['DB_set']) && is_numeric($_GET['DB_set'])) {
@@ -61,64 +60,56 @@
             }
 
             require_once("button-functions.php");
+        }
+            ?>
 
-            $search = $_SESSION['id-user'];
-            $query = "SELECT * FROM starting_loan_values WHERE ID_user = ? AND DB_set = ?";
+            <div id="loanDetails" class="mb-3 text-center"></div>
 
-            $stmt = $db->prepare($query);
-            if (!empty($search)) {
-                $stmt->bind_param("ii", $search, $DbID);
-            }
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $stmt->close();
+            <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                    const userId = <?= json_encode($_SESSION['id-user'] ?? 0) ?>;
+                    const dbSet = <?= json_encode($_GET['DB_set'] ?? 0) ?>;
 
-            while ($row = $result->fetch_assoc()) {
-                $id = $row['DB_set'];
-                $startDate = $row['start_date'];
-                $startInterest = $row['start_interest'];
-                $startPrinciple = $row['start_principle'];
-                $durationYears = $row['duration_years'];
-                $paymentInterval = $row['payment_interval'];
+                    fetch(`api/loans.php?DB_set=${dbSet}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.length === 0) {
+                                document.getElementById('loanDetails').innerHTML = "<p>No loan found.</p>";
+                                return;
+                            }
+                            
+                            const loan = data[0];
 
-                echo "<div class='mb-3 text-center row'><div class='col-md'>";
-                createButtonColumn1("DB_set", $DbID, "Simulate", "simulate.php");
-                        echo "</div>
-                        <div class='col-md'>
-                            <b>Loan Start Date:</b> $startDate &nbsp; 
-                        </div>
-                        <div class='col-md'>
-                            <b>Principle:</b> $$startPrinciple &nbsp; 
-                        </div>
-                        <div class='col-md'>
-                            <b>Beginning Interest:</b> $startInterest% &nbsp; 
-                        </div>
-                        <div class='col-md'>
-                            <b>Duration:</b> $durationYears years &nbsp; 
-                        </div>
-                        <div class='col-md'>
-                            <b>Interest Added:</b> $paymentInterval
-                        </div>
-                    </div>";
-                }
-            }
+                            // Build the HTML string dynamically
+                            const html = `
+                                <div class="row">
+                                    <div class="col-md">
+                                        <form action="simulate.php" method="GET" style="display:inline-block;">
+                                        <input type="hidden" name="DB_set" value="${loan.DB_set}">
+                                        <button type="submit" class="btn btn-primary">Simulate Loan</button>
+                                    </form>
+                                    </div>
+                                    <div class="col-md"><b>Loan Start Date:</b> ${loan.start_date}</div>
+                                    <div class="col-md"><b>Principle:</b> $${loan.start_principle}</div>
+                                    <div class="col-md"><b>Beginning Interest:</b> ${loan.start_interest}%</div>
+                                    <div class="col-md"><b>Duration:</b> ${loan.duration_years} years</div>
+                                    <div class="col-md"><b>Interest Added:</b> ${loan.payment_interval}</div>
+                                </div>
+                            `;
 
+                            // Insert HTML into the page
+                            document.getElementById('loanDetails').innerHTML = html;
+                        })
+                        .catch(err => {
+                            console.error("Fetch error:", err);
+                            document.getElementById('loanDetails').innerHTML = "<p>Error loading loan details.</p>";
+                        });
+                });
+            </script>
 
-            require("db-connection.php");
-
-            $query = "SELECT * FROM interest_repayments WHERE ID_user = ? AND DB_set = ? ORDER BY date_interest";
-
-            $stmt = $db->prepare($query);
-            if (!empty($search)) {
-                $stmt->bind_param("ii", $search, $DbID);
-            }
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $stmt->close();
-
-            $numResults = $result->num_rows;
-
-            addBtn("add-interest-btn", $DbID, "Add Interest");
+            <?php
+            echo "<br>";
+            addBtn("add-interest-btn", $DbID, "Add Payment");
             echo <<<END
             <table id="interestsTable" class="table table-bordered table-striped">
                 <thead>
@@ -132,7 +123,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
-    END;
+            END;
             ?>
 
              <script>
@@ -141,16 +132,50 @@
                     const dbSet = <?= json_encode($_GET['DB_set'] ?? 0) ?>;
 
                     fetch(`api/interests.php?user_id=${userId}&db_set=${dbSet}`)
-                        .then(response => response.text())  // because API returns HTML
-                        .then(htmlRows => {
-                            document.querySelector("#interestsTable tbody").innerHTML = htmlRows;
+                        .then(response => response.json())
+                        .then(data => {
+                            const tbody = document.querySelector("#interestsTable tbody");
+                            tbody.innerHTML = ""; // clear existing rows
 
-                            // OPTIONAL: attach JS event listeners here if needed
+                            data.forEach(row => {
+                                const tr = document.createElement("tr");
+                                tr.innerHTML = `
+                                    <td>${row.date_interest}</td>
+                                    <td>${row.new_val_interest}%</td>
+                                    <td><input type="checkbox" class="form-check-input" ${row.update_PMT == 1 ? "checked" : ""} disabled></td>
+                                    <td>
+                                        <button 
+                                            class="btn btn-warning edit-interest-btn"
+                                            data-db="${dbSet}"
+                                            data-id="${row.interest_ID}"
+                                            data-date="${row.date_interest}"
+                                            data-amount="${row.new_val_interest}"
+                                            data-pmt="${row.update_PMT}">
+                                            Edit
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button 
+                                            class="btn btn-danger delete-interest-btn"
+                                            data-db="${dbSet}"
+                                            data-id="${row.interest_ID}"
+                                            data-date="${row.date_interest}"
+                                            data-amount="${row.new_val_interest}"
+                                            data-pmt="${row.update_PMT}">
+                                            Delete
+                                        </button>
+                                    </td>
+                                `;
+                                tbody.appendChild(tr);
+                            });
+
+                            // OPTIONAL: attach dynamic listeners if needed
                         })
                         .catch(error => {
-                            console.error("Error loading payments:", error);
+                            console.error("Error loading interests:", error);
                         });
                 });
+
             </script>
 
 
@@ -179,11 +204,44 @@
                     const dbSet = <?= json_encode($_GET['DB_set'] ?? 0) ?>;
 
                     fetch(`api/payments.php?user_id=${userId}&db_set=${dbSet}`)
-                        .then(response => response.text())  // because API returns HTML
-                        .then(htmlRows => {
-                            document.querySelector("#paymentsTable tbody").innerHTML = htmlRows;
+                        .then(response => response.json())
+                        .then(data => {
+                            const tbody = document.querySelector("#paymentsTable tbody");
+                            tbody.innerHTML = "";
 
-                            // OPTIONAL: attach JS event listeners here if needed
+                            data.forEach(row => {
+                                const tr = document.createElement("tr");
+                                tr.innerHTML = `
+                                    <td>${row.date_additional_payment}</td>
+                                    <td>$${row.amount_additional_payments}</td>
+                                    <td><input type="checkbox" class="form-check-input" ${row.update_PMT == 1 ? "checked" : ""} disabled></td>
+                                    <td>
+                                        <button 
+                                            class="btn btn-warning edit-payment-btn"
+                                            data-db="${dbSet}"
+                                            data-id="${row.payment_ID}"
+                                            data-date="${row.date_additional_payment}"
+                                            data-amount="${row.amount_additional_payments}"
+                                            data-pmt="${row.update_PMT}">
+                                            Edit
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button 
+                                            class="btn btn-danger delete-payment-btn"
+                                            data-db="${dbSet}"
+                                            data-id="${row.payment_ID}"
+                                            data-date="${row.date_additional_payment}"
+                                            data-amount="${row.amount_additional_payments}"
+                                            data-pmt="${row.update_PMT}">
+                                            Delete
+                                        </button>
+                                    </td>
+                                `;
+                                tbody.appendChild(tr);
+                            });
+
+                            // OPTIONAL: attach event handlers to the buttons here if needed
                         })
                         .catch(error => {
                             console.error("Error loading payments:", error);
