@@ -31,7 +31,6 @@
 
 				echo "<h2>Your Options</h2>";
 				echo '<p><a href="view-loans.php" class="btn btn-primary">View all home loans</a>	';
-				echo '<a href="add-loan.php" class="btn btn-warning">Add a loan</a></p>';
 				echo <<<END
 					<p>
 					This web application is a prototype created by Hughen Flint as a final university project.<br>

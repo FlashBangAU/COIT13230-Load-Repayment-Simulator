@@ -151,3 +151,21 @@ Array
     [amount_additional_payments] => 3243
     [update_PMT] => 1
 )
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 2
+    [date_additional_payment] => 2025-06-12
+    [amount_additional_payments] => 10000
+    [update_PMT] => 0
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 2
+    [date_additional_payment] => 2025-06-12
+    [amount_additional_payments] => 10000
+    [update_PMT] => 1
+)

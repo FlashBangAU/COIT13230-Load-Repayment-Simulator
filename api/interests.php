@@ -16,31 +16,32 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
 
         case 'GET':
-            $ID_user = (int)$_SESSION['id-user'];
-            $DB_set = $_GET['db_set'] ?? null;
+        $ID_user = (int)$_SESSION['id-user'];
+        $DB_set = $_GET['db_set'] ?? null;
 
-            if (!$ID_user || !$DB_set) {
-                http_response_code(400);
-                echo json_encode(["error" => "Missing user_id or db_set"]);
-                exit;
-            }
+        if (!$ID_user || !$DB_set) {
+            http_response_code(400);
+            echo json_encode(["error" => "Missing user_id or db_set"]);
+            exit;
+        }
 
-            $query = "SELECT * FROM interest_repayments WHERE ID_user = ? AND DB_set = ? ORDER BY date_interest";
-            $stmt = $db->prepare($query);
-            $stmt->bind_param("ii", $ID_user, $DB_set);
-            $stmt->execute();
-            $result = $stmt->get_result();
+        $query = "SELECT * FROM interest_repayments WHERE ID_user = ? AND DB_set = ? ORDER BY date_interest";
+        $stmt = $db->prepare($query);
+        $stmt->bind_param("ii", $ID_user, $DB_set);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-            $rows = [];
-            while ($row = $result->fetch_assoc()) {
-                $rows[] = $row;
-            }
+        $rows = [];
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
 
-            echo json_encode($rows);
+        header('Content-Type: application/json');
+        echo json_encode($rows);
 
-            $stmt->close();
-            $result->free();
-            $db->close();
+        $stmt->close();
+        $result->free();
+        $db->close();
         break;
 
 

@@ -16,7 +16,6 @@ require_once("../button-functions.php");
 switch ($_SERVER['REQUEST_METHOD']) {
 
     case 'GET':
-        // User is already validated at the top
         $ID_user = (int)$_SESSION['id-user'];
         $DB_set = $_GET['db_set'] ?? null;
 
