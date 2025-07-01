@@ -116,7 +116,7 @@
                     <tr>
                         <th>Interest Change Date</th>
                         <th>Interest Change Amount</th>
-                        <th>Update Payment</th>
+                        <th>Recalculate Payment</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -188,7 +188,7 @@
                     <tr>
                         <th>Additional Payment Date</th>
                         <th>Payment Amount</th>
-                        <th>Update Payment</th>
+                        <th>Recalculate Payment</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>

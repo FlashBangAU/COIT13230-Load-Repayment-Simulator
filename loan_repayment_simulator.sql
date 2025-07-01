@@ -82,7 +82,7 @@ CREATE TABLE `user_accounts` (
 -- Dumping data for table `user_accounts`
 INSERT INTO `user_accounts` (`user_ID`, `username`, `password`) VALUES
 (1, 'test', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'),
-(2, 'morgan', '3f122fd6ff97ebdcef91e2e1af20b136397fc6442af86be4ebc20114eab8fa91');
+(2, 'morgan', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08');
 
 -- Indexes for dumped tables
 -- Indexes for table `additional_payments`
