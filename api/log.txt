@@ -169,3 +169,155 @@ Array
     [amount_additional_payments] => 10000
     [update_PMT] => 1
 )
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 2
+    [date_additional_payment] => 2025-06-12
+    [amount_additional_payments] => 10000
+    [update_PMT] => 0
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 4
+    [date_additional_payment] => 2025-06-06
+    [amount_additional_payments] => 4000
+    [update_PMT] => 1
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 4
+    [date_additional_payment] => 2025-06-06
+    [amount_additional_payments] => 4000
+    [update_PMT] => 0
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 5
+    [date_additional_payment] => 2025-06-06
+    [amount_additional_payments] => 3000
+    [update_PMT] => 0
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 2
+    [date_additional_payment] => 2025-06-12
+    [amount_additional_payments] => 10000
+    [update_PMT] => 1
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 2
+    [date_additional_payment] => 2025-06-12
+    [amount_additional_payments] => 10000
+    [update_PMT] => 0
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 5
+    [date_additional_payment] => 2025-06-06
+    [amount_additional_payments] => 3000
+    [update_PMT] => 1
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 4
+    [date_additional_payment] => 2025-06-06
+    [amount_additional_payments] => 4000
+    [update_PMT] => 1
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 4
+    [date_additional_payment] => 2025-06-06
+    [amount_additional_payments] => 4000
+    [update_PMT] => 0
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 5
+    [date_additional_payment] => 2025-06-06
+    [amount_additional_payments] => 3000
+    [update_PMT] => 0
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 5
+    [date_additional_payment] => 2025-06-06
+    [amount_additional_payments] => 2000
+    [update_PMT] => 0
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 5
+    [date_additional_payment] => 2025-06-06
+    [amount_additional_payments] => 4000
+    [update_PMT] => 0
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 3
+    [date_additional_payment] => 2025-07-23
+    [amount_additional_payments] => 1234235
+    [date_end_payments] => 2025-08-10
+    [payment_recurring_toggle] => 0
+    [update_PMT] => 1
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 3
+    [date_additional_payment] => 2025-07-23
+    [amount_additional_payments] => 1234235
+    [date_end_payments] => 2025-08-10
+    [payment_recurring_toggle] => 0
+    [update_PMT] => 1
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 3
+    [date_additional_payment] => 2025-07-23
+    [amount_additional_payments] => 1234235
+    [date_end_payments] => 2025-08-10
+    [payment_recurring_toggle] => 1
+    [update_PMT] => 1
+)
+Array
+(
+    [ID_user] => 3
+    [DB_set] => 1
+    [payment_ID] => 3
+    [date_additional_payment] => 2025-07-23
+    [amount_additional_payments] => 1234235
+    [date_end_payments] => 2025-08-10
+    [payment_recurring_toggle] => 0
+    [update_PMT] => 1
+)

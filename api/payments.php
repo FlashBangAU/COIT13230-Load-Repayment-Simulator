@@ -61,13 +61,17 @@ switch ($_SERVER['REQUEST_METHOD']) {
     // Validate required fields
     if (
         isset($input['ID_user'], $input['DB_set'], $input['date_additional_payment'],
-              $input['amount_additional_payments'], $input['update_PMT'])
+              $input['amount_additional_payments'], $input['date_end_payments'],
+              $input["payment_recurring_toggle"], $input['update_PMT'])
     ) {
         $ID_user = (int)$input['ID_user'];
         $DB_set = (int)$input['DB_set'];
         $date_additional_payment = $input['date_additional_payment'];
         $amount_additional_payments = (float)$input['amount_additional_payments'];
+        $date_end_payments = $input['date_end_payments'];
+        $payment_recurring_toggle = (int)$input["payment_recurring_toggle"];
         $update_PMT = (int)$input['update_PMT'];
+
 
         // Get the next available payment_ID
         $queryNextPaymentId = "
@@ -116,15 +120,15 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $query = "
             INSERT INTO additional_payments (
                 ID_user, DB_set, payment_ID, date_additional_payment,
-                amount_additional_payments, update_PMT
-            ) VALUES (?, ?, ?, ?, ?, ?)
+                amount_additional_payments, date_end_payments, payment_recurring_toggle, update_PMT
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ";
 
         $stmt = $db->prepare($query);
         $stmt->bind_param(
-            "iiisdi",
+            "iiisdsii",
             $ID_user, $DB_set, $nextPaymentID,
-            $date_additional_payment, $amount_additional_payments, $update_PMT
+            $date_additional_payment, $amount_additional_payments, $date_end_payments, $payment_recurring_toggle, $update_PMT
         );
 
         $stmt->execute();
@@ -174,6 +178,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
             $input['payment_ID'],
             $input['date_additional_payment'],
             $input['amount_additional_payments'],
+            $input['date_end_payments'],
+            $input['payment_recurring_toggle'],
             $input['update_PMT']
         )
     ) {
@@ -183,6 +189,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $payment_ID = (int)$input['payment_ID'];
         $date_additional_payment = $input['date_additional_payment'];              // string
         $amount_additional_payments = (float)$input['amount_additional_payments']; // float
+        $date_end_payments = $input['date_end_payments'];
+        $payment_recurring_toggle = (int)$input["payment_recurring_toggle"];
         $update_PMT = (int)$input['update_PMT'];
 
         // 🔧 Check if record exists before attempting update
@@ -210,6 +218,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
             UPDATE additional_payments
                SET date_additional_payment = ?,
                    amount_additional_payments = ?,
+                   date_end_payments = ?,
+                   payment_recurring_toggle = ?,
                    update_PMT = ?
              WHERE ID_user = ? 
                AND DB_set  = ?
@@ -226,9 +236,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
 
         $stmt->bind_param(
-            'sdiiii',
+            'sdsiiiii',
             $date_additional_payment,    // s = string
             $amount_additional_payments, // d = double
+            $date_end_payments,
+            $payment_recurring_toggle,
             $update_PMT,                 // i = integer
             $ID_user,                    // i = integer
             $DB_set,                     // i = integer

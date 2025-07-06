@@ -80,6 +80,8 @@
                             
                             const loan = data[0];
 
+                            console.log(data);
+
                             // Build the HTML string dynamically
                             const html = `
                                 <div class="row">
@@ -137,6 +139,8 @@
                             const tbody = document.querySelector("#interestsTable tbody");
                             tbody.innerHTML = ""; // clear existing rows
 
+                            console.log(data);
+
                             data.forEach(row => {
                                 const tr = document.createElement("tr");
                                 tr.innerHTML = `
@@ -188,6 +192,7 @@
                     <tr>
                         <th>Additional Payment Date</th>
                         <th>Payment Amount</th>
+                        <th>End Payment Date (If Recurring)</th>
                         <th>Recalculate Payment</th>
                         <th>Edit</th>
                         <th>Delete</th>
@@ -209,11 +214,14 @@
                             const tbody = document.querySelector("#paymentsTable tbody");
                             tbody.innerHTML = "";
 
+                            console.log(data);
+
                             data.forEach(row => {
                                 const tr = document.createElement("tr");
                                 tr.innerHTML = `
                                     <td>${row.date_additional_payment}</td>
                                     <td>$${row.amount_additional_payments}</td>
+                                    <td><input type="checkbox" class="form-check-input" ${row.payment_recurring_toggle == 1 ? "checked" : ""} disabled> ${row.date_end_payments}</td>
                                     <td><input type="checkbox" class="form-check-input" ${row.update_PMT == 1 ? "checked" : ""} disabled></td>
                                     <td>
                                         <button 
@@ -222,6 +230,8 @@
                                             data-id="${row.payment_ID}"
                                             data-date="${row.date_additional_payment}"
                                             data-amount="${row.amount_additional_payments}"
+                                            data-enddate="${row.date_end_payments}"
+                                            data-recurring="${row.payment_recurring_toggle}"
                                             data-pmt="${row.update_PMT}">
                                             Edit
                                         </button>
@@ -233,6 +243,8 @@
                                             data-id="${row.payment_ID}"
                                             data-date="${row.date_additional_payment}"
                                             data-amount="${row.amount_additional_payments}"
+                                            data-enddate="${row.date_end_payments}"
+                                            data-recurring="${row.payment_recurring_toggle}"
                                             data-pmt="${row.update_PMT}">
                                             Delete
                                         </button>
@@ -439,6 +451,8 @@
                 DB_set: parseInt(document.getElementById('pay-add-db-set').value),
                 date_additional_payment: formData.get("date"),
                 amount_additional_payments: Number(formData.get("amount")),
+                date_end_payments: formData.get("endDate"),
+                payment_recurring_toggle: formData.get("add-pay-recurring") ? 1 : 0,
                 update_PMT: formData.get("add-pay-update_PMT") ? 1 : 0
             };
 
@@ -476,6 +490,8 @@
                 document.getElementById('pay-edit-payment-id').value = button.getAttribute('data-id');
                 document.getElementById('pay-edit-date').value = button.getAttribute('data-date');
                 document.getElementById('pay-edit-amount').value = button.getAttribute('data-amount');
+                document.getElementById('pay-edit-enddate').value = button.getAttribute('data-enddate');
+                document.getElementById('pay-edit-recurring').checked = button.getAttribute('data-recurring') === "1"
                 document.getElementById('pay-edit-update-pmt').checked = button.getAttribute('data-pmt') === "1";
 
                 editPaymentModal.show();
@@ -494,6 +510,8 @@
                 payment_ID: parseInt(document.getElementById('pay-edit-payment-id').value),
                 date_additional_payment: formData.get("date"),
                 amount_additional_payments: Number(formData.get("amount")),
+                date_end_payments: formData.get("endDate"),
+                payment_recurring_toggle: formData.get("edit-pay-recurring") ? 1 : 0,
                 update_PMT: formData.get("edit-pay-update_PMT") ? 1 : 0
             };
 
@@ -531,6 +549,8 @@
                 document.getElementById('pay-delete-payment-id').value = button.getAttribute('data-id');
                 document.getElementById('pay-delete-date').value = button.getAttribute('data-date');
                 document.getElementById('pay-delete-amount').value = button.getAttribute('data-amount');
+                document.getElementById('pay-delete-enddate').value = button.getAttribute('data-enddate');
+                document.getElementById('pay-delete-recurring').checked = button.getAttribute('data-recurring') === "1"
                 document.getElementById('pay-delete-update-pmt').checked = button.getAttribute('data-pmt') === "1";
 
                 deletePaymentModal.show();
