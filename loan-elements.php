@@ -111,13 +111,13 @@
 
             <?php
             echo "<br>";
-            addBtn("add-interest-btn", $DbID, "Add Payment");
+            addBtn("add-interest-btn", $DbID, "Add Interest");
             echo <<<END
             <table id="interestsTable" class="table table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>Interest Change Date</th>
-                        <th>Interest Change Amount</th>
+                        <th>New Interest Amount</th>
                         <th>Recalculate Payment</th>
                         <th>Edit</th>
                         <th>Delete</th>

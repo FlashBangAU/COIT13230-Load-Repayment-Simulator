@@ -404,7 +404,7 @@
                             var noPaymentUpdate = false;
 
                             PMTbeforeOccuringPayments = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
-                            if(PMTbeforeOccuringPayments > PMT){
+                            if(PMTbeforeOccuringPayments < PMT){
                                 PMT = PMTbeforeOccuringPayments;
                                 noPaymentUpdate = true;
                             }
@@ -450,6 +450,8 @@
                     if(payDate[0] == currYear && payDate[1] == currMonth && payDate[2] == currDay){
                         if(payment[pmc].payment_recurring_toggle == 0){
                             currPrinciple -= payment[pmc].amount_additional_payments;
+                            totalPaidGraph += payment[pmc].amount_additional_payments;
+                            
                             console.log("Additional repayment made: $" + payment[pmc].amount_additional_payments);
                         }
 
@@ -462,7 +464,7 @@
                         ];
 
                         //calculates new PMT
-                        if(payment[pmc].update_PMT == 1){
+                        if(payment[pmc].update_PMT == 1 && payment[pmc].payment_recurring_toggle == 0){
                             PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
                             console.log("PMT set to: " + PMT);
 
@@ -502,8 +504,7 @@
                                     "YES",                                          //Statement if PMT recalculated
                                     "<td style='background-color:#fcd85e'>$" + PMT.toFixed(2)                            //PMT   
                                 ];
-                            }
-                            else{
+                            }else{
                                 console.log("recurringPayments value < PMT");
                                 variableChangeArray[variableChangeCount] = 
                                     ["Recurring Payment Begins",                        //Title
@@ -514,8 +515,6 @@
                                 ];
                             }
                         }
-
-                        totalPaidGraph += payment[pmc].amount_additional_payments;
 
                         pmc++;
                         variableChangeCount++; 
@@ -528,6 +527,8 @@
                     for(let i = 0; i < numOcurringPayments; i++){
                         let element = pmcRecurringPayments[i];
                         payDate = payment[element].date_end_payments.split("-").map(Number);
+
+                        var currPMT = PMT;
 
                         if (payDate[0] == currYear && payDate[1] == currMonth && payDate[2] == currDay) {
                             console.log(`Ending recurring payment on ${currYear}-${currMonth}-${currDay}`);
@@ -562,31 +563,66 @@
                                 higherPMT = false;
                             }
 
+
+                            //Payment Recalculated selected
+                            var greaterThanIntChangePMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
                             if(payment[element].update_PMT == 1){
-                                PMT = getPMT(currPrinciple, currInterestPaymentsAnnual, amountOfPayments);
-                                
-                                variableChangeArray[variableChangeCount] = 
-                                    ["Recurring Payment Ends",                      //Title
-                                    currDay + "/" + currMonth + "/" + currYear,     //current date
-                                    "$" + payment[element].amount_additional_payments.toFixed(2),                       //new interest
-                                    "YES",                                          //Statement if PMT recalculated
-                                    "<td style='background-color:#ffab41'>$" + PMT.toFixed(2)                           //PMT   
-                                ];
-                            }else if(tempPMT < PMTbeforeOccuringPayments && wasAboveMinimum == true){
-                                // PMT is reverting, but not recalculated
-                                variableChangeArray[variableChangeCount] = 
-                                    ["Recurring Payment Ends", currDay + "/" + currMonth + "/" + currYear,
-                                    "$" + payment[element].amount_additional_payments.toFixed(2),
-                                    "YES", "<td style='background-color:#ffab41'>$" + PMT.toFixed(2)];
+                                if(currPMT > PMTbeforeOccuringPayments){
+                                    PMT = greaterThanIntChangePMT;
+                                    PMTbeforeOccuringPayments = PMT;
+                                    if(tempPMT > greaterThanIntChangePMT){
+                                        PMT = tempPMT;
+                                    }
+
+                                    variableChangeArray[variableChangeCount] = 
+                                        [
+                                            "Recurring Payment Ends",
+                                            currDay + "/" + currMonth + "/" + currYear,
+                                            "$" + payment[element].amount_additional_payments.toFixed(2),
+                                            "YES (Recurring Payments > Payment)",
+                                            "<td style='background-color:#ffab41'>$" + PMT.toFixed(2)
+                                        ];
+                                }else{
+                                    PMT = PMTbeforeOccuringPayments;
+                                    if(tempPMT > greaterThanIntChangePMT){
+                                        PMT = tempPMT;
+                                    }
+
+                                    variableChangeArray[variableChangeCount] = 
+                                        [
+                                            "Recurring Payment Ends",
+                                            currDay + "/" + currMonth + "/" + currYear,
+                                            "$" + payment[element].amount_additional_payments.toFixed(2),
+                                            "YES (Recurring Payments < Payment)",
+                                            "<td style='background-color:#ffab41'>$" + PMT.toFixed(2)
+                                        ];
+                                }
+
+                            //payment recalulation no selected
                             }else{
-                                variableChangeArray[variableChangeCount] = 
-                                    ["Recurring Payment Ends",                        //Title
-                                    currDay + "/" + currMonth + "/" + currYear,     //current date
-                                    "$" + payment[element].amount_additional_payments.toFixed(2),                        //new interest
-                                    "NO",                                          //Statement if PMT recalculated
-                                    "<td style='background-color:#ffab41'>$" + PMT.toFixed(2)                            //PMT   
-                                ];
+                                if(currPMT > PMTbeforeOccuringPayments){
+                                    PMT = PMTbeforeOccuringPayments;
+                                    variableChangeArray[variableChangeCount] = 
+                                        [
+                                            "Recurring Payment Ends",
+                                            currDay + "/" + currMonth + "/" + currYear,
+                                            "$" + payment[element].amount_additional_payments.toFixed(2),
+                                            "NO (Recurring Payments > Payment)",
+                                            "<td style='background-color:#ffab41'>$" + PMT.toFixed(2)
+                                        ];
+                                }else{
+                                    PMT = PMTbeforeOccuringPayments;
+                                    variableChangeArray[variableChangeCount] = 
+                                        [
+                                            "Recurring Payment Ends",
+                                            currDay + "/" + currMonth + "/" + currYear,
+                                            "$" + payment[element].amount_additional_payments.toFixed(2),
+                                            "NO (Recurring Payments < Payment)",
+                                            "<td style='background-color:#ffab41'>$" + PMT.toFixed(2)
+                                        ];
+                                }
                             }
+
                             variableChangeCount++;
                             i--;
                         }
@@ -609,11 +645,12 @@
                     interval = setInterval(startIntervalStr, currMonth, currYear);
 
                     if(currPrinciple > 0){
-                        totalInterestCharged = totalInterestCharged + (PMT - (PMT - interestForInterval));
+                        totalInterestCharged += (PMT - (PMT - interestForInterval));
                         totalPaidGraph += PMT;
 
-                        currPrinciple = currPrinciple - (PMT - interestForInterval);
+                        currPrinciple -= (PMT - interestForInterval);
                     }
+
 
                     if(currPrincipleNoPay > 0){
                         totalInterestChargedNoPay = totalInterestChargedNoPay + (PMTnoPay - (PMTnoPay - interestForIntervalNoPay));
@@ -855,6 +892,7 @@
                         break;
                 }
                 console.log("interval: " + interval);
+                console.log("amountOfPayments: " + amountOfPayments);
 
         //set variables for graph for after simulation
                 principleGraph = [startPrinciple.toFixed(2)];
@@ -931,14 +969,14 @@
                     ["Starting Values",                             //Title
                     currDay + "/" + currMonth + "/" + currYear,     //current date
                     (startInterest * 100).toFixed(2) + "%",                    //new interest
-                    "Starting Payment",                             //Statement if PMT recalculated
+                    "Starting Loan",                             //Statement if PMT recalculated
                     "<td>$" + PMT.toFixed(2)                        //PMT   
                 ]; 
                 variableChangeArrayNoPay[0] = 
                     ["Starting Values",                             //Title
                     currDay + "/" + currMonth + "/" + currYear,     //current date
                     (startInterest * 100).toFixed(2) + "%",                    //new interest
-                    "Starting Payment",                             //Statement if PMT recalculated
+                    "Starting Loan",                             //Statement if PMT recalculated
                     "<td>$" + PMTnoPay.toFixed(2)                   //PMTnoPay   
                 ]; 
 
